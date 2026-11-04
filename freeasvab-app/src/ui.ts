@@ -158,12 +158,13 @@ export function toast(message: string, action?: { label: string; run: () => void
 
 const AFQT_CODES = new Set(["WK", "PC", "AR", "MK", "MF"]);
 
-export function badge(code: string, large = false) {
-  return `<span class="code${AFQT_CODES.has(code) ? "" : " career"}${large ? " lg" : ""}" aria-hidden="true">${code === "MF" ? "MB" : esc(code)}</span>`;
+export function tile(code: string | null, large = false) {
+  const name = code && code in PATHS ? code : "book";
+  return `<span class="tile${code && AFQT_CODES.has(code) ? " afqt" : ""}${large ? " lg" : ""}" aria-hidden="true">${icon(name)}</span>`;
 }
 
-export function chip(text: string) {
-  return `<span class="code plain" aria-hidden="true">${text}</span>`;
+export function section(id: string, title: string, body: string, note = "") {
+  return `<section class="group" aria-labelledby="${id}"><div class="group-head"><h2 id="${id}">${title}</h2>${note ? `<p>${note}</p>` : ""}</div>${body}</section>`;
 }
 
 export function fmtDate(t: number) {
