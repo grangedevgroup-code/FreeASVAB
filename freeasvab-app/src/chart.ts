@@ -63,7 +63,7 @@ export function answerSheet() {
 export function trendChart(points: { t: number; v: number }[], target: number) {
   const W = 320;
   const H = 170;
-  const pad = { l: 30, r: 14, t: 16, b: 28 };
+  const pad = { l: 30, r: 16, t: 18, b: 28 };
   const iw = W - pad.l - pad.r;
   const ih = H - pad.t - pad.b;
   const x = (i: number) => pad.l + (points.length === 1 ? iw / 2 : (i / (points.length - 1)) * iw);
