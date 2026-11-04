@@ -84,7 +84,7 @@ Every point above the minimum helps. An AFQT of 65 or higher puts you in **Categ
 - Usually means your **verbal and math** subtest scores are strong — and those subtests appear in most line scores, so many more jobs open up.
 - Makes you a more attractive applicant. Some enlistment incentives and special programs are reserved for higher-scoring applicants (often those in Category IIIA, 50+, or above). Ask your recruiter what is available for your score.
 
-Remember: the AFQT gets you **in the door**. Your **line scores** pick the room. If you have a particular job in mind, find out which subtests feed its line score and give those extra attention in Part III of this book.
+Remember: the AFQT gets you **in the door**. Your **line scores** pick the room. If you have a particular job in mind, find out which subtests feed its line score and give those subjects extra attention.
 
 ## Line Scores (Composite Scores)
 
