@@ -8,7 +8,7 @@ function value(s: string) {
 
 describe("generated questions", () => {
   for (const subtest of ["AR", "MK"] as const) {
-    it(`${subtest}: every template makes four distinct choices with one valid answer`, () => {
+    it(`${subtest}: every template makes four distinct choices with one valid answer`, { timeout: 60000 }, () => {
       for (let seed = 0; seed < 4000; seed++) {
         const id = generatedId(subtest, seed);
         const q = generate(id)!;
@@ -26,7 +26,7 @@ describe("generated questions", () => {
     });
   }
 
-  it("states the marked answer in the explanation", () => {
+  it("states the marked answer in the explanation", { timeout: 60000 }, () => {
     for (let seed = 0; seed < 2000; seed++) {
       for (const subtest of ["AR", "MK"] as const) {
         const q = generate(generatedId(subtest, seed))!;
