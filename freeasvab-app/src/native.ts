@@ -50,10 +50,10 @@ function bottomInset() {
 export async function syncSystemBars(dark: boolean) {
   if (!isNative) return;
   try {
-    const { SystemBars, SystemBarsStyle } = await import("@capacitor/core");
-    await SystemBars.setStyle({ style: SystemBarsStyle.Dark, bar: "StatusBar" as never });
+    const { SystemBars, SystemBarsStyle, SystemBarType } = await import("@capacitor/core");
+    await SystemBars.setStyle({ style: SystemBarsStyle.Dark, bar: SystemBarType.StatusBar });
     const pageUnderGestureBar = bottomInset() > 0;
-    await SystemBars.setStyle({ style: pageUnderGestureBar && !dark ? SystemBarsStyle.Light : SystemBarsStyle.Dark, bar: "NavigationBar" as never });
+    await SystemBars.setStyle({ style: pageUnderGestureBar && !dark ? SystemBarsStyle.Light : SystemBarsStyle.Dark, bar: SystemBarType.NavigationBar });
   } catch {
     return;
   }
