@@ -22,11 +22,11 @@ function lessonGroup(file) {
   return "reference";
 }
 const BOX_LABEL = {
-  key: "Key Idea",
+  key: "Key idea",
   tip: "Tip",
-  trap: "Watch Out",
+  trap: "Watch out",
   example: "Example",
-  memory: "Memory Trick",
+  memory: "Memory trick",
   formula: "Formulas",
   note: "Note",
   strategy: "Strategy",
