@@ -139,19 +139,17 @@ export async function practiceSet(id: string) {
   page(
     "practice",
     `<a class="back" href="#/practice/${esc(s.subtest)}">${icon("back")}${SUBTEST_NAMES[s.subtest as Subtest | "MF"]}</a>
-    <div class="subject-head">${badge(s.subtest, true)}<div class="page-head"><h1>${esc(s.title)}</h1><p class="lead">${esc(s.source)}</p></div></div>
-    <section class="panel" aria-labelledby="facts-h">
-      <header class="panel-head"><h2 id="facts-h">Set details</h2></header>
-      <dl class="kv"><div><dt>Items</dt><dd>${s.count}</dd></div><div><dt>Suggested time</dt><dd>${minutes ? `${minutes} min` : "–"}</dd></div></dl>
-    </section>
-    <section class="panel form" aria-labelledby="mode-h">
-      <header class="panel-head"><h2 id="mode-h">Mode</h2></header>
-      <div class="panel-body">
-        <label class="switch"><input type="radio" name="mode" value="learn" checked><span><strong>Learn mode</strong><small>See the answer and explanation after each question</small></span></label>
-        <label class="switch"><input type="radio" name="mode" value="test"><span><strong>Test mode</strong><small>${minutes ? `Timed at ${minutes} minutes, ` : ""}answers at the end</small></span></label>
-        <button class="btn signal wide" id="go" type="button">Start</button>
+    <div class="page-head with-tile">${tile(s.subtest, true)}<div><h1>${esc(s.title)}</h1><p class="lead">${esc(s.source)}</p></div></div>
+    <p class="record">${plural(s.count, "question")}${minutes ? `, with a suggested time of ${minutes} minutes` : ""}.</p>
+    ${section(
+      "mode-h",
+      "How do you want to take it?",
+      `<div class="list" role="radiogroup" aria-labelledby="mode-h">
+        <label class="item choice-item"><input type="radio" name="mode" value="learn" checked><span class="bubble" aria-hidden="true"></span><span class="item-main"><strong>Learn mode</strong><small>See the answer and explanation after each question</small></span></label>
+        <label class="item choice-item"><input type="radio" name="mode" value="test"><span class="bubble" aria-hidden="true"></span><span class="item-main"><strong>Test mode</strong><small>${minutes ? `Timed at ${minutes} minutes, ` : ""}answers at the end</small></span></label>
       </div>
-    </section>`,
+      <button class="btn primary wide" id="go" type="button">Start</button>`,
+    )}`,
     s.title,
     { narrow: true },
   );
