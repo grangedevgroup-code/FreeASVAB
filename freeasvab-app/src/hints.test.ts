@@ -35,6 +35,8 @@ describe("hint rules", () => {
     ["AR", "<p>The sum of three consecutive integers is 96. What is the largest of the three?</p>", "Consecutive numbers"],
     ["AR", "<p>A 13-foot ladder leans against a wall with its base 5 feet from the wall.</p>", "Right triangles (Pythagorean theorem)"],
     ["AR", "<p>A jacket costs $80. It is on sale for 25% off. What is the sale price?</p>", "Discounts and tax"],
+    ["AR", "<p>On a blueprint, 1/4 inch represents 1 foot. A wall is drawn 3 1/2 inches long. How long is the actual wall?</p>", "Ratios and proportions"],
+    ["AR", "<p>A flight leaves at 2245 and lands at 0310 the next morning. How long is the flight?</p>", "Elapsed time (military time)"],
     ["MK", "<p>Solve: <em>x</em><sup>2</sup> − 2<em>x</em> − 15 = 0</p>", "Quadratic equations"],
     ["MK", "<p>Solve the inequality: 2<em>x</em> + 3 &gt; 11</p>", "Inequalities"],
     ["MK", "<p>What is the value of 3<em>a</em> + 2<em>b</em> when <em>a</em> = 4 and <em>b</em> = −5?</p>", "Substituting values"],
