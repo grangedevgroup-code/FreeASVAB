@@ -406,7 +406,7 @@ function main() {
 
   const lessons = chapters.map((c, i) => {
     const { html, toc } = chapterHtml(c.body, quizCounts, chapterLinks);
-    if (/\bChapter \d+\b/.test(html.replace(/<[^>]+>/g, ""))) problems.push(`${c.file}: unresolved chapter reference`);
+    if (/\bChapter \d+\b/.test(stripTags(html))) problems.push(`${c.file}: unresolved chapter reference`);
     const { file, ...meta } = learn[i];
     return { ...meta, html, toc };
   });
