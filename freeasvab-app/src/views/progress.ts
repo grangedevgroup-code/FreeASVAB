@@ -41,10 +41,13 @@ export function progress(showAll = false) {
     <section class="card" aria-labelledby="acc-h"><h2 id="acc-h">Accuracy by subject</h2>
       <p class="hint">Based on your last 60 answers in each subject.</p>
       <div class="table-wrap"><table class="subject-table">
-        <thead><tr><th scope="col">AFQT subjects</th><th scope="col"><span class="sr-only">Bar</span></th><th scope="col" class="num">Correct</th></tr></thead>
-        <tbody>${accuracyRows([...AFQT_PRACTICE, "MF"])}</tbody>
-        <thead><tr><th scope="col">Career subjects</th><th scope="col"><span class="sr-only">Bar</span></th><th scope="col" class="num">Correct</th></tr></thead>
-        <tbody>${accuracyRows(CAREER_PRACTICE)}</tbody>
+        <thead><tr><th scope="col">Subject</th><th aria-hidden="true"></th><th scope="col" class="num">Correct</th></tr></thead>
+        <tbody>
+          <tr class="group-row"><th scope="colgroup" colspan="3">AFQT subjects</th></tr>
+          ${accuracyRows([...AFQT_PRACTICE, "MF"])}
+          <tr class="group-row"><th scope="colgroup" colspan="3">Career subjects</th></tr>
+          ${accuracyRows(CAREER_PRACTICE)}
+        </tbody>
       </table></div>
     </section>
     <section aria-labelledby="hist-h"><h2 id="hist-h" class="section-title">History</h2>
