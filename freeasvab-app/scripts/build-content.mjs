@@ -12,6 +12,15 @@ const OUT = join(APP, "public", "content");
 
 const SUBTESTS = ["GS", "AR", "WK", "PC", "MK", "EI", "AI", "SI", "MC", "AO"];
 const LEARN_SKIP = new Set(["00-intro.md", "04-plan.md", "16-pt1.md", "17-pt2.md", "18-pt3.md"]);
+const LESSON_SUBTEST = { "05": "WK", "06": "PC", "07": "MF", "08": "AR", "09": "MK", "10": "GS", "11": "EI", "12": "AI", "13": "SI", "14": "MC", "15": "AO" };
+
+function lessonGroup(file) {
+  const n = +file.slice(0, 2);
+  if (n <= 3) return "start";
+  if (n <= 9) return "afqt";
+  if (n <= 15) return "career";
+  return "reference";
+}
 const BOX_LABEL = {
   key: "Key Idea",
   tip: "Tip",
