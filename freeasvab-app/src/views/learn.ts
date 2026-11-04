@@ -21,11 +21,11 @@ export async function learn() {
   page(
     "learn",
     `<div class="page-head"><h1>Learn</h1><p class="lead">Plain-English lessons with worked examples, memory tricks and practice sets.</p></div>
-    ${last ? `<a class="notice" href="#/learn/${esc(last.id)}">${icon("book")}<span><strong>Continue reading</strong><br>${esc(last.title)}</span>${icon("next", "chev")}</a>` : ""}
+    ${last ? `<div class="list"><a class="item" href="#/learn/${esc(last.id)}"><span class="tile" aria-hidden="true">${icon("book")}</span><span class="item-main"><strong>Continue reading</strong><small>${esc(last.title)}</small></span>${icon("next", "chev")}</a></div>` : ""}
     ${GROUPS.map((g) => {
       const items = idx.learn.filter((l) => l.group === g.key);
       if (!items.length) return "";
-      return `<section class="panel" aria-labelledby="g-${g.key}"><header class="panel-head"><h2 id="g-${g.key}">${g.title}</h2><span class="meta">${g.note}</span></header><div class="rows">${items.map(lessonRow).join("")}</div></section>`;
+      return section(`g-${g.key}`, g.title, `<div class="list">${items.map(lessonRow).join("")}</div>`, g.note);
     }).join("")}`,
     "Learn",
     { narrow: true },
