@@ -111,7 +111,7 @@ export function home() {
         <a class="btn primary big" href="#/start/quick">Start the quick check</a>
         <p class="hint">${testMeta("quick").label}. Everything stays on this device.</p>
       </section>`
-    : `<h1 class="sr-only">Home</h1>`;
+    : `<h1 class="page-title">Welcome back</h1>`;
 
   const tests = (["quick", "afqt", "full"] as TestKind[])
     .map((k) => {
