@@ -38,6 +38,27 @@ export async function flushNative() {
   }
 }
 
+function bottomInset() {
+  const probe = document.createElement("div");
+  probe.style.cssText = "position:fixed;left:0;bottom:0;width:0;height:0;visibility:hidden;padding-bottom:var(--sab)";
+  document.body.append(probe);
+  const px = parseFloat(getComputedStyle(probe).paddingBottom) || 0;
+  probe.remove();
+  return px;
+}
+
+export async function syncSystemBars(dark: boolean) {
+  if (!isNative) return;
+  try {
+    const { SystemBars, SystemBarsStyle } = await import("@capacitor/core");
+    await SystemBars.setStyle({ style: SystemBarsStyle.Dark, bar: "StatusBar" as never });
+    const pageUnderGestureBar = bottomInset() > 0;
+    await SystemBars.setStyle({ style: pageUnderGestureBar && !dark ? SystemBarsStyle.Light : SystemBarsStyle.Dark, bar: "NavigationBar" as never });
+  } catch {
+    return;
+  }
+}
+
 export async function shareBackup(name: string, json: string) {
   const { Filesystem, Directory, Encoding } = await import("@capacitor/filesystem");
   const { Share } = await import("@capacitor/share");
