@@ -103,7 +103,7 @@ const AR: Rule[] = [
     "Working together must take LESS time than the faster worker alone.",
   ),
   r(
-    /\b[0-2]\d[0-5]\d\b[\s\S]*\b[0-2]\d[0-5]\d\b|military time|24-hour|time will it be|how long (was|is|did)/i,
+    /\b[0-2]\d[0-5]\d\b[\s\S]*\b[0-2]\d[0-5]\d\b|military time|24-hour|time will it be|how long (was|is|did) (the )?(flight|patrol|trip|drive|shift|march|mission|meeting|exercise)/i,
     "Elapsed time (military time)",
     [
       "Count whole hours first, then the extra minutes.",
