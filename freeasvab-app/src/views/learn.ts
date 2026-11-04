@@ -60,11 +60,7 @@ export async function lesson(id: string) {
         <div><h1>${esc(l.title)}</h1>${l.sub ? `<p class="lead">${esc(l.sub)}</p>` : ""}</div>
       </header>
       ${subject ? `<div class="row wrap"><a class="btn primary" href="#/practice/${esc(l.subtest!)}">Practice ${esc(subject)}</a></div>` : ""}
-      ${
-        l.toc.length > 2
-          ? `<details class="toc card"><summary>On this page</summary><ol>${l.toc.map((t) => `<li><button type="button" class="linkish" data-to="${esc(t.id)}">${esc(t.text)}</button></li>`).join("")}</ol></details>`
-          : ""
-      }
+      ${l.toc.length > 2 ? `<details class="toc card"><summary>On this page (${l.toc.length} sections)</summary><ol></ol></details>` : ""}
       <div class="lesson-body">${l.html}</div>
       <footer class="lesson-foot">
         ${subject ? `<a class="btn primary" href="#/practice/${esc(l.subtest!)}">Practice ${esc(subject)} now</a>` : ""}
