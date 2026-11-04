@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { afqtCategory, normCdf, normInv, score, standardScore } from "./scoring";
+import { afqtCategory, afqtRange, normCdf, normInv, score, standardScore } from "./scoring";
 
 describe("normal distribution helpers", () => {
   it("round-trips", () => {
