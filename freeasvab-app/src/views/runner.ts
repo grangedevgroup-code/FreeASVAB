@@ -268,7 +268,7 @@ function renderQuestion(t: ActiveTest) {
       clock.textContent = "";
       return;
     }
-    clock.textContent = fmtClock(r);
+    clock.innerHTML = `TIME <b>${fmtClock(r)}</b>`;
     clock.classList.toggle("low", r < 60000);
     if (r <= 0) {
       window.clearInterval(tick);
