@@ -1,17 +1,17 @@
 import { esc, loadIndex, loadLesson, type Lesson, type LessonGroup } from "../bank";
 import { SUBTEST_NAMES, type Subtest } from "../scoring";
 import { load, update } from "../store";
-import { app, badge, chip, icon, page } from "../ui";
+import { app, icon, page, section, tile } from "../ui";
 
 const GROUPS: { key: LessonGroup; title: string; note: string }[] = [
-  { key: "start", title: "Start here", note: "How the test works and how it is scored" },
-  { key: "afqt", title: "AFQT subtests", note: "Decide whether you can enlist" },
-  { key: "career", title: "Career subtests", note: "Open up jobs" },
-  { key: "reference", title: "Quick reference", note: "Formulas, checklists and terms" },
+  { key: "start", title: "Start here", note: "How the test works and how it is scored." },
+  { key: "afqt", title: "AFQT subtests", note: "These decide whether you can enlist." },
+  { key: "career", title: "Career subtests", note: "These open up jobs." },
+  { key: "reference", title: "Quick reference", note: "Formulas, checklists and terms." },
 ];
 
 function lessonRow(l: Lesson) {
-  return `<a class="row" href="#/learn/${esc(l.id)}">${l.subtest ? badge(l.subtest) : chip(icon("book"))}<span class="row-main"><strong>${esc(l.title)}</strong><small>${esc(l.sub)}</small></span>${icon("next", "chev")}</a>`;
+  return `<a class="item" href="#/learn/${esc(l.id)}">${tile(l.subtest ?? null)}<span class="item-main"><strong>${esc(l.title)}</strong><small>${esc(l.sub)}</small></span>${icon("next", "chev")}</a>`;
 }
 
 export async function learn() {
