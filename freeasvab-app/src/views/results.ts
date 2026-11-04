@@ -2,7 +2,7 @@ import { esc, loadBank, passage, question } from "../bank";
 import { scoreScale } from "../chart";
 import { afqtRange, BRANCH_MINIMUMS, CAT_ORDER, SUBTEST_NAMES, type Subtest } from "../scoring";
 import { load, type Attempt } from "../store";
-import { app, badge, fmtDate, fmtMinutes, icon, page, plural, sessionGet, sessionSet } from "../ui";
+import { app, fmtDate, fmtMinutes, icon, page, plural, section, sessionGet, sessionSet, tile } from "../ui";
 import { howTo } from "./runner";
 
 export function categoryText(afqt: number) {
@@ -47,95 +47,100 @@ export function results(id: string) {
   const range = s?.afqt != null ? afqtRange(a.raw) : null;
   const areas = focusAreas(a);
   const diploma = settings.education === "diploma";
+  const facts = `Taken ${fmtDate(a.finishedAt)}. ${right} of ${a.items.length} correct${activeMs > 60000 ? ` in ${fmtMinutes(activeMs / 60000)}` : ""}.${hinted ? ` You opened how to solve on ${plural(hinted, "question")}.` : ""}`;
 
-  const report =
+  const masthead =
     s && s.afqt !== null
-      ? `<section class="panel" aria-labelledby="rep-h">
-          <header class="panel-head"><h2 id="rep-h">Practice score report</h2><span class="meta">${fmtDate(a.finishedAt)}</span></header>
-          <div class="panel-body">
-            <div class="score-top">
-              <div class="score-block"><span class="score-num">${s.afqt}</span><span class="score-label">AFQT estimate</span></div>
-              <dl class="kv">
-                <div><dt>Category</dt><dd>${s.category}</dd></div>
-                <div><dt>Likely range</dt><dd>${range ? `${range.low}–${range.high}` : "–"}</dd></div>
-                <div><dt>Correct</dt><dd>${right}<small>/${a.items.length}</small></dd></div>
-                <div><dt>Time used</dt><dd>${activeMs > 60000 ? fmtMinutes(activeMs / 60000) : "–"}</dd></div>
-              </dl>
-            </div>
-            <p>${categoryText(s.afqt)}</p>
-            ${scoreScale({ score: s.afqt, low: range?.low, high: range?.high, goal: settings.target, min: 31, category: s.category! })}
-            ${range ? `<p class="hint">The likely range shows how far luck alone could move the estimate. A ${a.kind === "quick" ? "short check" : "practice test"} can only narrow it down so far.</p>` : ""}
-          </div>
-        </section>
-        <section class="panel" aria-labelledby="enlist-h">
-          <header class="panel-head"><h2 id="enlist-h">Enlistment eligibility</h2><span class="meta">${diploma ? "High school diploma" : "GED"}</span></header>
-          <div class="rows">${BRANCH_MINIMUMS.map((b) => {
-            const min = diploma ? b.diploma : b.ged;
-            const ok = s.afqt! >= min;
-            return `<div class="row"><span class="row-main"><strong>${b.branch}</strong><small>Minimum AFQT ${min}</small></span><span class="tag ${ok ? "go" : "nogo"}">${icon(ok ? "check" : "close")}${ok ? "Go" : "No-go"}</span></div>`;
-          }).join("")}</div>
-          <div class="panel-body"><p class="hint">Published minimums for applicants with a ${diploma ? "high school diploma" : "GED (usually 50)"}. Change this in Settings. Branches change minimums often, so confirm with a recruiter.</p></div>
-        </section>`
-      : `<section class="panel" aria-labelledby="rep-h">
-          <header class="panel-head"><h2 id="rep-h">Practice summary</h2><span class="meta">${fmtDate(a.finishedAt)}</span></header>
-          <div class="panel-body">
-            <dl class="kv">
-              <div><dt>Correct</dt><dd>${right}<small>/${a.items.length}</small></dd></div>
-              <div><dt>Score</dt><dd>${Math.round((right / Math.max(1, a.items.length)) * 100)}%</dd></div>
-              <div><dt>Time used</dt><dd>${activeMs > 60000 ? fmtMinutes(activeMs / 60000) : "–"}</dd></div>
-            </dl>
-            <p class="hint">Practice sessions do not produce an AFQT estimate. Take a practice test for that.</p>
-          </div>
-        </section>`;
+      ? `<a class="back" href="#/progress">${icon("back")}All results</a>
+        <h1>${esc(a.title)}</h1>
+        <p class="mast-lead">${facts}</p>
+        <div class="mast-score">
+          <span class="score-num">${s.afqt}</span>
+          <div class="score-side"><p class="score-cat">Category ${s.category}</p>${range ? `<p>Likely between ${range.low} and ${range.high} on the real test</p>` : ""}</div>
+        </div>
+        ${scoreScale({ score: s.afqt, low: range?.low, high: range?.high, goal: settings.target, min: 31, category: s.category! })}
+        <p class="mast-facts">${categoryText(s.afqt)}${range ? ` The likely range is how far luck alone could move this estimate; a ${a.kind === "quick" ? "short check" : "practice test"} can only narrow it so far.` : ""}</p>`
+      : `<a class="back" href="#/progress">${icon("back")}All results</a>
+        <h1>${esc(a.title)}</h1>
+        <p class="mast-lead">${facts}</p>
+        <p class="mast-facts">${Math.round((right / Math.max(1, a.items.length)) * 100)}% correct. Practice sessions do not produce an AFQT estimate; take a practice test for that.</p>`;
 
   const focus = areas.length
-    ? `<section class="panel stripe" aria-labelledby="focus-h"><header class="panel-head"><h2 id="focus-h">What to work on next</h2></header><ul class="next-list">${areas
-        .map(
-          (x) =>
-            `<li><div><strong>${badge(x.k)}${SUBTEST_NAMES[x.k]}: ${x.pct}% correct</strong><p>${why(x.k)}</p></div><a class="btn primary" href="#/practice/${x.k}">Practice</a></li>`,
-        )
-        .join("")}</ul></section>`
+    ? section(
+        "focus-h",
+        "What to work on next",
+        `<div class="list">${areas
+          .map((x) => `<a class="item" href="#/practice/${x.k}">${tile(x.k)}<span class="item-main"><strong>${SUBTEST_NAMES[x.k]}, ${x.pct}% correct</strong><small>${why(x.k)}</small></span>${icon("next", "chev")}</a>`)
+          .join("")}</div>`,
+      )
     : "";
 
-  const jobsList = (title: string, list: { code: string; name: string; value: number }[]) =>
-    `<p class="jobs-head">${title}</p><ul class="jobs">${list.map((x) => `<li><span class="code-txt">${x.code}</span><span class="name">${x.name}</span><span class="val">${x.value}</span></li>`).join("")}</ul>`;
+  const enlist =
+    s && s.afqt !== null
+      ? section(
+          "enlist-h",
+          "Enlistment minimums",
+          `<div class="list table-wrap"><table class="data">
+            <thead><tr><th scope="col">Branch</th><th scope="col" class="num">Minimum AFQT</th><th scope="col">This estimate</th></tr></thead>
+            <tbody>${BRANCH_MINIMUMS.map((b) => {
+              const min = diploma ? b.diploma : b.ged;
+              const gap = min - s.afqt!;
+              return `<tr><th scope="row">${b.branch}</th><td class="num">${min}</td><td>${
+                gap <= 0 ? `<span class="status go">${icon("check")}Meets it</span>` : `<span class="status nogo">${icon("close")}${plural(gap, "point")} short</span>`
+              }</td></tr>`;
+            }).join("")}</tbody>
+          </table></div>`,
+          `Published minimums for applicants with a ${diploma ? "high school diploma" : "GED, usually 50"}. You can change this in Settings. Branches change minimums often, so confirm with a recruiter.`,
+        )
+      : "";
+
+  const subtests = section(
+    "subj-h",
+    s ? "Subtest scores" : "Results by subtest",
+    `<div class="list table-wrap"><table class="data">
+      <thead><tr><th scope="col">Subtest</th><th scope="col" class="num">Correct</th><th aria-hidden="true"></th>${s ? `<th scope="col" class="num">Standard score</th>` : ""}</tr></thead>
+      <tbody>${order
+        .map((k) => {
+          const r = a.raw[k]!;
+          const pct = Math.round((r.correct / r.total) * 100);
+          return `<tr><th scope="row"><span class="subject-cell">${tile(k)}<span>${SUBTEST_NAMES[k]}<small>${k}</small></span></span></th><td class="num">${r.correct} of ${r.total}</td><td class="bar-cell"><span class="track"><span style="width:${pct}%"></span></span></td>${s ? `<td class="num strong">${s.standard[k] ?? "–"}</td>` : ""}</tr>`;
+        })
+        .join("")}</tbody>
+    </table></div>`,
+    s ? "Standard scores put 50 at average. Most people score between 40 and 60." : "",
+  );
+
+  const jobsTable = (caption: string, list: { code: string; name: string; value: number }[]) =>
+    `<div class="list table-wrap"><table class="data">
+      <caption>${caption}</caption>
+      <thead><tr><th scope="col">Score</th><th scope="col">What it covers</th><th scope="col" class="num">Estimate</th></tr></thead>
+      <tbody>${list.map((x) => `<tr><th scope="row">${x.code}</th><td>${x.name}</td><td class="num strong">${x.value}</td></tr>`).join("")}</tbody>
+    </table></div>`;
+
+  const jobs =
+    s && s.army.length
+      ? section(
+          "jobs-h",
+          "Job scores",
+          `${jobsTable("Army line scores", s.army)}${s.mage.length ? jobsTable("Air Force and Space Force, as percentiles", s.mage) : ""}`,
+          `Each branch combines subtests into its own job scores. These are estimates.${a.kind === "full" ? "" : " Take the full practice ASVAB to see all of them."}`,
+        )
+      : "";
 
   page(
     "progress",
-    `<a class="back" href="#/progress">${icon("back")}All results</a>
-    <div class="page-head"><h1>${esc(a.title)}</h1>${hinted ? `<p class="lead">How to solve opened on ${plural(hinted, "question")}.</p>` : ""}</div>
-    ${report}
-    ${a.timedOut?.length ? `<div class="notice warn">${icon("warn")}<p>Time ran out in ${a.timedOut.map((k) => SUBTEST_NAMES[k as Subtest] ?? k).join(", ")}. Blank answers counted as wrong.</p></div>` : ""}
+    `${a.timedOut?.length ? `<div class="notice warn">${icon("warn")}<p>Time ran out in ${a.timedOut.map((k) => SUBTEST_NAMES[k as Subtest] ?? k).join(", ")}. Blank answers counted as wrong.</p></div>` : ""}
     ${focus}
-    <section class="panel" aria-labelledby="subj-h">
-      <header class="panel-head"><h2 id="subj-h">Subtest results</h2>${s ? `<span class="meta">Score: 50 is average</span>` : ""}</header>
-      <div class="table-wrap"><table class="data">
-        <thead><tr><th scope="col">Subtest</th><th scope="col" class="num">Correct</th><th aria-hidden="true"></th>${s ? `<th scope="col" class="num">Score</th>` : ""}</tr></thead>
-        <tbody>${order
-          .map((k) => {
-            const r = a.raw[k]!;
-            const pct = Math.round((r.correct / r.total) * 100);
-            return `<tr><th scope="row"><span class="subject-cell">${badge(k)}${SUBTEST_NAMES[k]}</span></th><td class="num">${r.correct}/${r.total}</td><td class="bar-cell"><span class="track"><span style="width:${pct}%"></span></span></td>${s ? `<td class="num">${s.standard[k] ?? "–"}</td>` : ""}</tr>`;
-          })
-          .join("")}</tbody>
-      </table></div>
-    </section>
-    ${
-      s && s.army.length
-        ? `<section class="panel" aria-labelledby="jobs-h">
-            <header class="panel-head"><h2 id="jobs-h">Job scores (estimated)</h2></header>
-            <div class="panel-body"><p class="hint">Each branch combines subtests into its own job scores.${a.kind === "full" ? "" : " Take the full practice ASVAB to see all of them."}</p></div>
-            ${jobsList("Army line scores", s.army)}
-            ${s.mage.length ? jobsList("Air Force and Space Force (percentiles)", s.mage) : ""}
-          </section>`
-        : ""
-    }
+    ${enlist}
+    ${subtests}
+    ${jobs}
     <div class="actions">
       <a class="btn primary" href="#/review/${esc(a.id)}">${missed ? `Review ${plural(missed, "missed question")}` : "Review answers"}</a>
       <a class="btn" href="#/">Back to home</a>
     </div>
     ${s ? `<p class="hint">These scores are estimates. The real ASVAB adapts to your answers and uses official tables, so treat this as a guide to your progress, not a promise. <a href="#/about">How we estimate</a>.</p>` : ""}`,
     `${a.title} results`,
+    { masthead, narrow: true },
   );
 }
 
@@ -163,24 +168,22 @@ export async function review(id: string) {
         const q = question(it.qid);
         if (!q) return "";
         const p = passage(q.passage);
-        const status = it.correct ? "Correct" : it.choice === null ? "Blank" : "Missed";
-        return `<article class="panel rev ${it.correct ? "ok" : "bad"}" aria-labelledby="rv-${n}">
-          <header class="panel-head"><h2 id="rv-${n}">Item ${n + 1}</h2><span class="tag ${it.correct ? "go" : "nogo"}">${status}</span></header>
-          <div class="panel-body">
-            <p class="rev-head">${badge(q.subtest)}<span>${SUBTEST_NAMES[q.subtest as Subtest] ?? "Math basics"}</span></p>
-            ${p ? `<details class="passage"><summary>Show the passage</summary>${p}</details>` : ""}
-            <div class="qtext">${q.text}</div>
-            <ol class="opts ${q.figChoices ? "figs" : ""}">${q.choices
-              .map(
-                (c, i) =>
-                  `<li class="${i === q.answer ? "right" : i === it.choice ? "wrong" : ""}"><span class="key" aria-hidden="true">${"ABCD"[i]}</span><span class="ctext">${c}</span>${
-                    i === q.answer ? '<span class="tag go">Answer</span>' : i === it.choice ? '<span class="tag nogo">Yours</span>' : ""
-                  }</li>`,
-              )
-              .join("")}</ol>
-            <div class="explain">${q.explain}</div>
-            ${howTo(q.subtest, q.text, false)}
-          </div>
+        const status = it.correct ? "Correct" : it.choice === null ? "Left blank" : "Missed";
+        return `<article class="sheet review-item" aria-labelledby="rv-${n}">
+          <header class="review-head"><h2 id="rv-${n}">Question ${n + 1}</h2><span class="status ${it.correct ? "go" : "nogo"}">${icon(it.correct ? "check" : "close")}${status}</span></header>
+          <p class="review-subject">${tile(q.subtest)}<span>${SUBTEST_NAMES[q.subtest as Subtest] ?? "Math basics"}</span></p>
+          ${p ? `<details class="passage-toggle"><summary>Show the passage</summary><div class="passage">${p}</div></details>` : ""}
+          <div class="qtext">${q.text}</div>
+          <ol class="opts ${q.figChoices ? "figs" : ""}">${q.choices
+            .map(
+              (c, i) =>
+                `<li class="${i === q.answer ? "right" : i === it.choice ? "wrong" : ""}"><span class="bubble" aria-hidden="true">${"ABCD"[i]}</span><span class="ctext">${c}</span>${
+                  i === q.answer ? '<span class="mark go">Correct answer</span>' : i === it.choice ? '<span class="mark nogo">Your answer</span>' : ""
+                }</li>`,
+            )
+            .join("")}</ol>
+          <div class="explain">${q.explain}</div>
+          ${howTo(q.subtest, q.text, false)}
         </article>`;
       })
       .join("")}`,
