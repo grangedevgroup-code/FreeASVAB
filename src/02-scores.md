@@ -49,7 +49,7 @@ The services group AFQT scores into categories. These come straight from the off
 | Category | AFQT range | What it means |
 |---|---|---|
 | **I** | 93–99 | Top of the scale |
-| **II** | 65–92 | Well above average — **your 70–80 goal lives here** |
+| **II** | 65–92 | Well above average — a strong, competitive score |
 | **IIIA** | 50–64 | Above average |
 | **IIIB** | 31–49 | Average to slightly below; the usual minimum to enlist is in this band |
 | **IVA** | 21–30 | Below most enlistment minimums |
