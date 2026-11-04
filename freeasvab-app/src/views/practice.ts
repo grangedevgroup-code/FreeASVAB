@@ -80,35 +80,30 @@ export async function practiceSubject(k: string) {
   page(
     "practice",
     `<a class="back" href="#/practice">${icon("back")}Practice</a>
-    <div class="subject-head">${badge(k, true)}<div class="page-head"><h1>${name}</h1><p class="lead">${SUBJECT_INFO[k].about}</p></div></div>
-    <section class="panel" aria-labelledby="rec-h">
-      <header class="panel-head"><h2 id="rec-h">Your record</h2></header>
-      <dl class="kv">
-        <div><dt>Questions</dt><dd>${st.total}${gen ? "+" : ""}</dd></div>
-        <div><dt>Seen</dt><dd>${st.seen}</dd></div>
-        <div><dt>Recent accuracy</dt><dd>${acc ? `${acc.pct}%` : "–"}</dd></div>
-        <div><dt>To review</dt><dd>${subjectMissed}</dd></div>
-      </dl>
-    </section>
-    <section class="panel form" aria-labelledby="quick-h">
-      <header class="panel-head"><h2 id="quick-h">Quick practice</h2><span class="meta">Unseen and missed first</span></header>
-      <div class="panel-body">
+    <div class="page-head with-tile">${tile(k, true)}<div><h1>${name}</h1><p class="lead">${SUBJECT_INFO[k].about}</p></div></div>
+    <p class="record">${record(st.seen, st.total, gen, acc, subjectMissed)}</p>
+    ${section(
+      "quick-h",
+      "Practice now",
+      `<div class="sheet form">
         <p class="field-label" id="count-label">How many questions?</p>
         <div class="seg" role="radiogroup" aria-labelledby="count-label">
           ${[10, 20, 30].map((n, i) => `<button type="button" role="radio" aria-checked="${i === 0}" data-n="${n}" class="${i === 0 ? "on" : ""}" ${n > st.total && !gen ? "disabled" : ""}>${n}</button>`).join("")}
         </div>
-        <button class="btn signal wide" id="go" type="button">Start practice</button>
+        <button class="btn primary wide" id="go" type="button">Start practice</button>
         ${gen ? `<button class="btn wide" id="gen" type="button">Unlimited new ${k === "AR" ? "word problems" : "math problems"}</button>` : ""}
         ${subjectMissed ? `<button class="btn wide" id="review" type="button">Review ${plural(subjectMissed, "missed question")}</button>` : ""}
-      </div>
-    </section>
-    <section class="panel" aria-labelledby="study-h">
-      <header class="panel-head"><h2 id="study-h">Study material</h2></header>
-      <div class="rows">
-        <a class="row" href="#/learn/${SUBJECT_INFO[k].lesson}">${icon("book")}<span class="row-main"><strong>${name} lesson</strong><small>Plain-English explanations, examples and tips</small></span>${icon("next", "chev")}</a>
+      </div>`,
+      "Questions you have not seen or got wrong come first.",
+    )}
+    ${section(
+      "study-h",
+      "Study material",
+      `<div class="list">
+        <a class="item" href="#/learn/${SUBJECT_INFO[k].lesson}"><span class="tile" aria-hidden="true">${icon("learn")}</span><span class="item-main"><strong>${name} lesson</strong><small>Plain-English explanations, examples and tips</small></span>${icon("next", "chev")}</a>
         ${sets.map(setRow).join("")}
-      </div>
-    </section>`,
+      </div>`,
+    )}`,
     `${name} practice`,
     { narrow: true },
   );
