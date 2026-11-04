@@ -1,6 +1,6 @@
 # How to Use This Book {.nonum data-sub="Read this first. It takes five minutes and will save you hours."}
 
-This book has one job: to help you walk into the ASVAB ready, calm, and able to earn the highest score you are capable of. The goal most people set is an **AFQT score of 70 to 80** — and this book is built to get you there and push you higher if you want to go further.
+This book has one job: to help you walk into the ASVAB ready, calm, and able to earn the highest score you are capable of. Whether you need to clear the enlistment minimum or want a top score that opens more jobs and incentives, this book is built to get you there and push you higher if you want to go further.
 
 Everything is written in plain English. You do not need to remember anything from school to start. Each chapter begins at the basics, shows you worked examples step by step, and then gives you practice questions with full explanations.
 
