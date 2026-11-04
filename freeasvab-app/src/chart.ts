@@ -33,6 +33,7 @@ export function scoreScale(o: { score: number; low?: number; high?: number; goal
       <span><i class="k-you" aria-hidden="true"></i>You${o.low !== undefined ? ` (likely ${o.low}–${o.high})` : ""}</span>
       <span><i class="k-goal" aria-hidden="true"></i>Goal ${o.goal}</span>
       <span><i class="k-min" aria-hidden="true"></i>Minimum ${o.min}</span>
+      <span>Bands are AFQT categories</span>
     </figcaption>
   </figure>`;
 }
