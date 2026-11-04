@@ -438,7 +438,7 @@ export function plainText(html: string) {
 }
 
 export function hintFor(subtest: string, html: string): Hint {
-  const text = plainText(html);
+  const text = plainText(html) + (html.includes('class="frac"') ? " fraction" : "");
   if (subtest === "WK") return /^\S+ most nearly means/i.test(text) ? WK_VOCAB : WK_CONTEXT;
   if (subtest === "AO") return /connected|points A and B/i.test(text) ? AO_CONNECT : AO_PUZZLE;
   for (const rule of RULES[subtest] ?? []) if (rule.test.test(text)) return rule.hint;
