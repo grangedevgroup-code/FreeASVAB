@@ -284,7 +284,10 @@ function chapterHtml(body, quizIds) {
 }
 
 function main() {
-  const files = readdirSync(SRC).filter((f) => f.endsWith(".md") && !f.startsWith("_")).sort();
+  const BANK = join(SRC, "_bank");
+  const bankFiles = existsSync(BANK) ? readdirSync(BANK).filter((f) => f.endsWith(".md")).sort().map((f) => `_bank/${f}`) : [];
+  bankFiles.forEach((f) => LEARN_SKIP.add(f));
+  const files = [...readdirSync(SRC).filter((f) => f.endsWith(".md") && !f.startsWith("_")).sort(), ...bankFiles];
   const quizzes = [];
   const chapters = [];
   for (const f of files) {
