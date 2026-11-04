@@ -84,7 +84,7 @@ export function home() {
             delta !== null && delta !== 0 ? ` <span class="delta ${delta > 0 ? "up" : "down"}">${delta > 0 ? "▲" : "▼"} ${Math.abs(delta)} since last test</span>` : ""
           }</p>
           <p>${categoryText(sc.afqt!)}</p>
-          <p>${sc.afqt! >= target ? `${icon("check")}You reached your goal of ${target}.` : `Goal ${target}: ${target - sc.afqt!} points to go.`}</p>
+          <p>${sc.afqt! >= target ? `${icon("check")}You reached your goal of ${target}.` : `Goal ${target}: ${plural(target - sc.afqt!, "point")} to go.`}</p>
         </div>
       </div>
       ${scoreScale({ score: sc.afqt!, low: range?.low, high: range?.high, goal: target, min: 31, category: sc.category! })}
