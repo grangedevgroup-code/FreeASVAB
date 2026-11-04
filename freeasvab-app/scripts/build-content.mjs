@@ -334,6 +334,7 @@ function main() {
   const passages = {};
   const questions = [];
   const sets = [];
+  const aliases = {};
   for (const z of quizzes) {
     const subtest = subtestOf(z.id);
     const source = sourceName(z.id, z.title, z.chapter);
