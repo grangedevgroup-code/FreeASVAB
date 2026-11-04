@@ -85,7 +85,15 @@ function include(text, base) {
 }
 
 function evalCheck(expr) {
+  const gcd = (a, b) => (b ? gcd(b, a % b) : Math.abs(a));
+  const factorial = (n) => (n <= 1 ? 1 : n * factorial(n - 1));
   const env = {
+    gcd,
+    lcm: (a, b) => Math.abs(a * b) / gcd(a, b),
+    factorial,
+    comb: (n, k) => factorial(n) / (factorial(k) * factorial(n - k)),
+    perm: (n, k) => factorial(n) / factorial(n - k),
+    sum: (xs) => xs.reduce((a, b) => a + b, 0),
     sqrt: Math.sqrt,
     pi: Math.PI,
     floor: Math.floor,
