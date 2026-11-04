@@ -3,6 +3,7 @@ import { esc, fullSections, loadBank, loadIndex, loadLesson, missedIds, passage,
 import { AFQT_SUBTESTS, BRANCH_MINIMUMS, CAT_ORDER, SUBTEST_NAMES, score, type Raw, type Subtest } from "./scoring";
 import { askPersistence, exportBackup, importBackup, load, resetAll, save, storageWorks, uid, update, type ActiveTest, type Attempt, type Kind, type Section } from "./store";
 import { trendChart } from "./chart";
+import { flushNative, isNative, restoreNative, shareBackup } from "./native";
 
 const app = document.getElementById("app")!;
 let tick: number | undefined;
@@ -105,7 +106,7 @@ function home() {
 
 function installHint() {
   const standalone = matchMedia("(display-mode: standalone)").matches || (navigator as Navigator & { standalone?: boolean }).standalone;
-  if (standalone || (window as unknown as { Capacitor?: unknown }).Capacitor) return "";
+  if (standalone || isNative) return "";
   const ios = /iphone|ipad|ipod/i.test(navigator.userAgent);
   return `<details class="card install"><summary>Install it as an app</summary>
     <p>${
@@ -788,11 +789,20 @@ function settings() {
   bind("education", (v) => update((st) => (st.settings.education = v as "diploma" | "ged")));
   bind("theme", (v) => update((st) => (st.settings.theme = v as "system" | "light" | "dark")));
   bind("textSize", (v) => update((st) => (st.settings.textSize = v as "normal" | "large" | "larger")));
-  document.getElementById("export")!.addEventListener("click", () => {
+  document.getElementById("export")!.addEventListener("click", async () => {
+    const name = `freeasvab-backup-${new Date().toISOString().slice(0, 10)}.json`;
+    if (isNative) {
+      try {
+        await shareBackup(name, exportBackup());
+      } catch {
+        alert("The backup could not be shared.");
+      }
+      return;
+    }
     const blob = new Blob([exportBackup()], { type: "application/json" });
     const a = document.createElement("a");
     a.href = URL.createObjectURL(blob);
-    a.download = `freeasvab-backup-${new Date().toISOString().slice(0, 10)}.json`;
+    a.download = name;
     document.body.append(a);
     a.click();
     a.remove();
@@ -864,16 +874,19 @@ document.addEventListener("visibilitychange", () => {
   if (document.visibilityState === "hidden") {
     pauseClock();
     save();
+    flushNative();
   } else if (location.hash === "#/run" && load().active && document.querySelector(".runner")) {
     resumeClock();
   }
 });
 
 window.addEventListener("hashchange", route);
-applySettings();
 matchMedia("(prefers-color-scheme: dark)").addEventListener("change", applySettings);
-route();
+restoreNative().then(() => {
+  applySettings();
+  route();
+});
 
-if ("serviceWorker" in navigator && import.meta.env.PROD && !(window as unknown as { Capacitor?: unknown }).Capacitor) {
+if ("serviceWorker" in navigator && import.meta.env.PROD && !isNative) {
   navigator.serviceWorker.register("sw.js").catch(() => undefined);
 }

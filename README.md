@@ -22,7 +22,7 @@ Results are saved in your browser's local storage and never leave the device. Se
 
 ## The printable study guide
 
-The `src` folder holds the full study guide in Markdown: 21 chapters, three practice tests and about 700 questions with explanations. `build.py` turns it into a PDF. The app reads the same files, so a fix to a question shows up in both places.
+The `src` folder holds the full study guide in Markdown: 20 chapters, three full practice tests and 725 questions with explanations. `build.py` turns it into a PDF. The app reads the same files, so a fix to a question shows up in both places.
 
 ## Building it yourself
 

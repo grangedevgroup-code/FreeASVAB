@@ -1,3 +1,4 @@
+import { mirrorNative } from "./native";
 import type { Raw, Scores, Subtest } from "./scoring";
 
 export type Kind = "full" | "afqt" | "practice" | "review" | "set";
@@ -88,7 +89,9 @@ export function load(): State {
 export function save() {
   if (!memory) return;
   try {
-    localStorage.setItem(KEY, JSON.stringify(memory));
+    const json = JSON.stringify(memory);
+    mirrorNative(json);
+    localStorage.setItem(KEY, json);
     storageOk = true;
   } catch {
     storageOk = false;

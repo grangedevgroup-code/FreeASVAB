@@ -22,17 +22,20 @@ export function mirrorNative(json: string) {
   if (!isNative) return;
   pending = json;
   clearTimeout(timer);
-  timer = window.setTimeout(async () => {
-    const v = pending;
-    pending = null;
-    if (v === null) return;
-    try {
-      const { Preferences } = await import("@capacitor/preferences");
-      await Preferences.set({ key: KEY, value: v });
-    } catch {
-      return;
-    }
-  }, 300);
+  timer = window.setTimeout(flushNative, 300);
+}
+
+export async function flushNative() {
+  clearTimeout(timer);
+  const v = pending;
+  pending = null;
+  if (v === null) return;
+  try {
+    const { Preferences } = await import("@capacitor/preferences");
+    await Preferences.set({ key: KEY, value: v });
+  } catch {
+    return;
+  }
 }
 
 export async function shareBackup(name: string, json: string) {

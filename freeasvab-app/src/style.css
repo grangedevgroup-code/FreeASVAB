@@ -349,6 +349,10 @@ h3 {
   flex-direction: column;
   gap: 12px;
 }
+.form p,
+.form h2 {
+  margin: 0;
+}
 .form label:not(.switch):not(.btn) {
   display: flex;
   flex-direction: column;
@@ -371,11 +375,12 @@ h3 {
   align-items: flex-start;
   cursor: pointer;
   padding: 4px 0;
+  min-height: 44px;
+  align-items: center;
 }
 .switch input {
   width: 22px;
   height: 22px;
-  margin-top: 2px;
   flex: none;
   accent-color: var(--accent);
 }
@@ -623,6 +628,7 @@ details.passage {
 }
 
 .explain {
+  scroll-margin-bottom: 110px;
   margin-top: 14px;
   padding: 12px 14px;
   border-radius: 12px;
@@ -925,7 +931,13 @@ figcaption {
 .install summary {
   cursor: pointer;
   font-weight: 600;
-  min-height: 32px;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+}
+.foot a {
+  display: inline-block;
+  padding: 12px 4px;
 }
 .foot {
   text-align: center;
