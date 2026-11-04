@@ -21,9 +21,10 @@ export type ActiveTest = {
   resumedAt: number;
   startedAt: number;
   timedOut?: string[];
+  hinted?: string[];
 };
 
-export type AttemptItem = { qid: string; subtest: string; choice: number | null; correct: boolean; ms: number };
+export type AttemptItem = { qid: string; subtest: string; choice: number | null; correct: boolean; ms: number; hinted?: boolean };
 
 export type Attempt = {
   id: string;

@@ -38,7 +38,9 @@ npm run build    # static site in dist/
 
 `npm run content` turns the guide in `src` into the JSON the app loads, and fails if a question has the wrong number of choices, no marked answer, no explanation, or a math answer that does not match its check formula. Questions use a short Markdown format. A question starts with `? `, each choice with `- `, the right choice ends with ` *`, and the explanation starts with `>`. The existing chapters have plenty of examples.
 
-The same build can be wrapped as an Android or iOS app with Capacitor: run `npm run cap:sync`, then open the `android` or `ios` project in Android Studio or Xcode.
+The same build can be wrapped as an Android or iOS app with Capacitor: run `npm run cap:sync`, then open the `android` or `ios` project in Android Studio or Xcode. The app icon and splash images come from `freeasvab-app/assets`; after changing them, run `npx @capacitor/assets generate --android --ios` to rebuild the native icon sets.
+
+The look follows the U.S. Web Design System's colors and its Public Sans typeface, both free for anyone to use. FreeASVAB is not a government site and does not use government seals or the official-website banner.
 
 ## License and disclaimer
 

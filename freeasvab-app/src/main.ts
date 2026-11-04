@@ -1,8 +1,10 @@
+import "@fontsource-variable/public-sans/wght.css";
 import "./style.css";
 import { esc, fullSections, loadBank, loadIndex, loadLesson, missedIds, passage, pick, poolSize, question, unlimitedMath, type QuizSet } from "./bank";
 import { AFQT_SUBTESTS, BRANCH_MINIMUMS, CAT_ORDER, SUBTEST_NAMES, score, type Raw, type Subtest } from "./scoring";
 import { askPersistence, exportBackup, importBackup, load, resetAll, save, storageWorks, uid, update, type ActiveTest, type Attempt, type Kind, type Section } from "./store";
 import { trendChart } from "./chart";
+import { hintFor } from "./hints";
 import { flushNative, isNative, restoreNative, shareBackup } from "./native";
 
 const app = document.getElementById("app")!;
@@ -44,7 +46,10 @@ function icon(name: string) {
 
 function page(active: string, body: string) {
   clearInterval(tick);
-  app.innerHTML = `<main class="page" id="main">${body}</main>${nav(active)}`;
+  const bar = active
+    ? `<header class="appbar"><div class="appbar-inner"><a class="brand" href="#/"><img src="icons/icon-192.png" alt="" width="32" height="32">FreeASVAB</a><small>Free practice for the<br>Armed Services Vocational Aptitude Battery</small></div></header>`
+    : "";
+  app.innerHTML = `${bar}<main class="page" id="main">${body}</main>${active ? nav(active) : ""}`;
   window.scrollTo(0, 0);
   const h = app.querySelector("h1");
   if (h) {
@@ -297,6 +302,7 @@ function renderQuestion(t: ActiveTest) {
       ${p ? `<article class="passage">${p}</article>` : ""}
       ${q.instr && t.index === 0 ? `<p class="instr">${q.instr}</p>` : ""}
       <div class="qtext" id="qtext">${q.text}</div>
+      ${howTo(q.subtest, q.text, !!t.hinted?.includes(qid))}
       <div class="choices ${q.figChoices ? "figs" : ""}" role="radiogroup" aria-labelledby="qtext">
         ${q.choices
           .map((c, i) => {
@@ -345,6 +351,13 @@ function renderQuestion(t: ActiveTest) {
       (document.getElementById("next") as HTMLButtonElement).disabled = false;
     }),
   );
+  app.querySelector<HTMLDetailsElement>(".howto")?.addEventListener("toggle", (e) => {
+    if (!(e.target as HTMLDetailsElement).open) return;
+    update((s) => {
+      const a = s.active!;
+      if (!(a.hinted ??= []).includes(qid)) a.hinted.push(qid);
+    });
+  });
   document.getElementById("next")!.addEventListener("click", () => {
     if (t.instant && !checked) {
       pauseClock();
@@ -366,6 +379,12 @@ function renderQuestion(t: ActiveTest) {
     pauseClock();
     location.hash = "#/";
   });
+}
+
+function howTo(subtest: string, text: string, open: boolean) {
+  const h = hintFor(subtest, text);
+  return `<details class="howto" ${open ? "open" : ""}><summary>How to solve this</summary>
+    <div class="howto-body"><strong>${esc(h.title)}</strong><ol>${h.steps.map((x) => `<li>${esc(x)}</li>`).join("")}</ol>${h.trap ? `<p class="trap"><strong>Watch out:</strong> ${esc(h.trap)}</p>` : ""}</div></details>`;
 }
 
 function nextLabel(t: ActiveTest, isChecked: boolean) {
@@ -428,7 +447,7 @@ function finish() {
     sec.qids.map((qid) => {
       const q = question(qid);
       const choice = t.answers[qid] ?? null;
-      return { qid, subtest: q?.subtest ?? sec.subtest, choice, correct: !!q && choice === q.answer, ms: t.times[qid] ?? 0 };
+      return { qid, subtest: q?.subtest ?? sec.subtest, choice, correct: !!q && choice === q.answer, ms: t.times[qid] ?? 0, hinted: !!t.hinted?.includes(qid) };
     }),
   );
   const raw: Raw = {};
@@ -481,7 +500,7 @@ function results(id: string) {
     "progress",
     `<a class="back" href="#/progress">All results</a>
     <h1>${esc(a.title)}</h1>
-    <p class="lead">${fmtDate(a.finishedAt)} · ${right} of ${a.items.length} correct (${Math.round((right / Math.max(1, a.items.length)) * 100)}%)</p>
+    <p class="lead">${fmtDate(a.finishedAt)} · ${right} of ${a.items.length} correct (${Math.round((right / Math.max(1, a.items.length)) * 100)}%)${hintCount(a) ? ` · used How to solve on ${hintCount(a)}` : ""}</p>
     ${
       s && s.afqt !== null
         ? `<section class="card afqt">
@@ -528,6 +547,10 @@ function results(id: string) {
   );
 }
 
+function hintCount(a: Attempt) {
+  return a.items.filter((i) => i.hinted).length;
+}
+
 function categoryText(afqt: number) {
   if (afqt >= 93) return "Top of the scale.";
   if (afqt >= 65) return "Well above average.";
@@ -564,6 +587,7 @@ function review(id: string) {
             .map((c, i) => `<li class="${i === q.answer ? "right" : i === it.choice ? "wrong" : ""}"><span class="letter">${"ABCD"[i]}</span><span class="ctext">${c}</span>${i === q.answer ? '<span class="tag">Answer</span>' : i === it.choice ? '<span class="tag">You</span>' : ""}</li>`)
             .join("")}</ol>
           <div class="explain">${q.explain}</div>
+          ${howTo(q.subtest, q.text, false)}
         </article>`;
       })
       .join("")}`,

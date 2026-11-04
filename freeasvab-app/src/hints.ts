@@ -340,7 +340,7 @@ const SUBJECT: Record<string, Hint> = {
 const RULES: Record<string, Rule[]> = { AR, MF: [...AR, ...MK], MK, EI, MC, PC };
 
 export function hintFor(subtest: string, html: string): Hint {
-  const text = html.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ");
+  const text = html.replace(/<sup>/g, "^").replace(/<[^>]+>/g, " ").replace(/\s+/g, " ");
   for (const r of RULES[subtest] ?? []) if (r.test.test(text)) return r.hint;
   if (subtest === "AR") return { title: "Word problem method", steps: ["Find what the question asks for.", "List the numbers you are given and what they mean.", "Write the math in steps, then check that the answer makes sense."] };
   if (subtest === "MK" || subtest === "MF") return { title: "Math method", steps: ["Identify the topic: equation, exponents, geometry or number rules.", "Write each step; do not do it all in your head.", "Plug your answer back in to check it."] };
