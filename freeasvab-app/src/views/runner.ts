@@ -118,7 +118,6 @@ function sectionIntro(t: ActiveTest, key: string) {
         ${next ? `<p class="hint">After this part: ${SUBTEST_NAMES[next.subtest]}</p>` : ""}
       </div></div>
       <footer class="exam-foot"><div class="exam-foot-inner">
-        <div class="exam-foot-note"></div>
         <div class="exam-actions">
           <button class="btn" id="exit2" type="button">Save and exit</button>
           <button class="btn primary" id="go" type="button">Start part ${t.section + 1}</button>
