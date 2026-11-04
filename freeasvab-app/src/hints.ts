@@ -398,6 +398,6 @@ export function hintFor(subtest: string, html: string): Hint {
   return FALLBACK[subtest === "MF" ? "MK" : subtest] ?? FALLBACK.GENERIC;
 }
 
-export function isFallback(subtest: string, hint: Hint) {
-  return Object.values(FALLBACK).includes(hint) || hint === FALLBACK[subtest];
+export function isFallback(hint: Hint) {
+  return Object.values(FALLBACK).includes(hint);
 }
