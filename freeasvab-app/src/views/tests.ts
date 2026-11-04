@@ -1,7 +1,7 @@
 import { esc, fullSections, loadBank, missedIds, quickSections, QUICK_CHECK } from "../bank";
 import { AFQT_SUBTESTS, CAT_ORDER, SUBTEST_NAMES } from "../scoring";
 import { load, update } from "../store";
-import { badge, fmtMinutes, icon, page } from "../ui";
+import { fmtMinutes, icon, page, section, tile } from "../ui";
 import { answeredCount, begin, guardActive, totalCount } from "./runner";
 
 export type TestKind = "quick" | "afqt" | "full";
