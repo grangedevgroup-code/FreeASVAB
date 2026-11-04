@@ -152,8 +152,10 @@ export function about() {
       <p>Every question was written for FreeASVAB to match the subjects, style and difficulty of the ASVAB. Real ASVAB questions are kept secure by the Department of Defense and are never published.</p>
       <h2>Open source</h2>
       <p>The app and all its questions are MIT licensed. Source code and the printable study guide: <a href="https://github.com/grangedevgroup-code/FreeASVAB" target="_blank" rel="noopener">github.com/grangedevgroup-code/FreeASVAB</a>. Version ${__APP_VERSION__}.</p>
+      </div>
     </article>
     ${siteFooter()}`,
     "About",
+    { narrow: true },
   );
 }
