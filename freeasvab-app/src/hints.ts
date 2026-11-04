@@ -244,7 +244,6 @@ const MK: Rule[] = [
   ),
   r(/simplify|like terms|expression/i, "Simplifying expressions", ["Distribute first: 3(2x − 4) = 6x − 12.", "Then combine like terms: x-terms with x-terms, numbers with numbers.", "A minus sign in front of parentheses changes every sign inside."]),
   r(/a number|twice|less than|more than|product of|sum of|difference of/i, "Turning words into an equation", ["Let x be the unknown number.", "\"Twice\" means 2x; \"3 less than\" means − 3 AFTER the other part.", "Write the equation, then solve it."], "\"3 less than twice a number\" is 2x − 3, not 3 − 2x."),
-  r(/value of .* when|when [a-z] =|if [a-z] = /i, "Substituting values", ["Replace each letter with its number, using parentheses: 3(4) + 2(−5).", "Then follow the order of operations: exponents, multiply and divide, then add and subtract."]),
   r(/solve|what is x|= \d|\bx\b.*=/i, "Solving equations", ["Get the x-term alone: undo addition or subtraction on both sides.", "Then undo multiplication or division.", "Check by putting your answer back into the original equation."], "Whatever you do to one side, do to the other."),
   r(/hypotenuse|right triangle|legs/i, "Pythagorean theorem", ["a² + b² = c², where c is the longest side (the hypotenuse).", "Know the common triples: 3-4-5, 5-12-13, 8-15-17 and their multiples."]),
   r(/circle|radius|diameter|circumference/i, "Circles", ["Area = π × r².", "Circumference = 2 × π × r (or π × diameter).", "The radius is half the diameter."], "Check whether you were given the radius or the diameter."),
