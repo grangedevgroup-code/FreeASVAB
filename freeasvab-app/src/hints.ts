@@ -267,7 +267,7 @@ const EI: Rule[] = [
   ),
   r(/unit of|measured in|instrument|meter\b|ammeter|voltmeter|ohmmeter|milli|kilo(?!watt)|is equal to/i, "Units and meters", ["Voltage: volts (voltmeter, connected in parallel). Current: amperes (ammeter, connected in series). Resistance: ohms.", "Power is in watts; capacitance in farads; inductance in henrys.", "Milli = 1/1,000; kilo = 1,000; mega = 1,000,000."]),
   r(
-    /diode|capacitor|inductor|coil|transistor|fuse|circuit breaker|rectif|semiconductor|relay|stores? (energy|charge)|one direction|alternating current into|ac into dc|change alternating|amplif|melting/i,
+    /diode|capacitor|inductor|coil|transistor|fuse|circuit breaker|rectif|semiconductor|relay|stor(es|e|ing) (electric(al)? )?(energy|charge)|one direction|alternating current into|ac into dc|change alternating|amplif|melting/i,
     "Components and what they do",
     ["Resistor limits current. Capacitor stores charge and blocks DC. Inductor (coil) opposes changes in current.", "Diode lets current flow one way; diodes in a rectifier turn AC into DC. Transistor amplifies or switches.", "Fuses and circuit breakers protect a circuit by opening it when current is too high."],
   ),
