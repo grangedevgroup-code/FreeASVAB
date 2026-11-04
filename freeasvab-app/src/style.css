@@ -185,6 +185,35 @@ h3 {
   outline: 3px solid var(--focus);
   outline-offset: 2px;
 }
+[tabindex="-1"]:focus,
+[tabindex="-1"]:focus-visible {
+  outline: none;
+}
+
+details > summary {
+  list-style: none;
+}
+details > summary::-webkit-details-marker {
+  display: none;
+}
+.toc summary::after,
+.table-view summary::after,
+details.passage summary::after,
+.install summary::after {
+  content: "";
+  width: 8px;
+  height: 8px;
+  margin: 0 4px 0 auto;
+  border-right: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  transform: rotate(45deg) translateY(-2px);
+}
+.toc[open] summary::after,
+.table-view[open] summary::after,
+details.passage[open] summary::after,
+.install[open] summary::after {
+  transform: rotate(-135deg) translateY(-2px);
+}
 
 .sr-only {
   position: absolute !important;
