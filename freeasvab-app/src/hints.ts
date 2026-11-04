@@ -121,11 +121,17 @@ const AR: Rule[] = [
     ["Find the least common multiple (LCM) of the two time intervals.", "List multiples of the larger number until one is also a multiple of the smaller.", "Add that many minutes or hours to the starting time."],
   ),
   r(
-    /work(ing)? together|together.*(hours?|job|finish|fill|paint)|working alone|alone in|fills? (a|the) tank|pipe [ab]|crew|can paint|can finish/i,
+    /(workers?|printers?|machines?|crew)\b[\s\S]*at the same rate/i,
+    "More or fewer workers",
+    ["Find the total work in worker-days (or machine-hours): workers × time.", "Divide that total by the new number of workers.", "More workers means LESS time; fewer workers means more time."],
+    "This is not a regular proportion: doubling the workers halves the time.",
+  ),
+  r(
+    /work(ing)? together|together.*(hours?|job|finish|fill|paint)|working alone|alone in|fills? (a|the) (tank|pool)|fill a (tank|pool)|pipe [ab]|crew|can paint|can finish|drain/i,
     "Work together",
     [
       "Each worker does 1 ÷ (their time) of the job per hour.",
-      "Add the rates, then flip the result to get the time together.",
+      "Add the rates, then flip the result to get the time together. A drain works against you: subtract its rate.",
       "Shortcut for two workers: (A × B) ÷ (A + B).",
     ],
     "Working together must take LESS time than the faster worker alone.",
