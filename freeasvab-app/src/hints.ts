@@ -276,7 +276,8 @@ const EI: Rule[] = [
   r(/\d[\d,.]*\s*-?(volts?|v\b|ohms?|Ω|amps?|amperes?|milliamp)|current will|resistance increases|voltage doubles/i, "Ohm's law", ["V = I × R (volts = amps × ohms).", "Cover the one you want: I = V ÷ R, R = V ÷ I.", "More resistance at the same voltage means LESS current."]),
   r(/conduct|insulat|material/i, "Conductors and insulators", ["Metals such as copper, silver and aluminum conduct well (low resistance).", "Rubber, glass, plastic and dry wood are insulators.", "Current flows most easily through low resistance."]),
   r(/ground|wire|prong|neutral|\bhot\b|shock|outlet/i, "Wiring and safety", ["In U.S. wiring, black or red is usually hot, white is neutral, and green or bare copper is ground.", "The ground path carries fault current safely away from you."]),
-  r(/symbol|schematic|zigzag/i, "Schematic symbols", ["Zigzag = resistor. Two parallel lines = capacitor. Long and short lines = battery.", "Triangle pointing at a bar = diode. Coil of loops = inductor. A broken line with a lever = switch."]),
+  r(/electromagnet|magnetic field|magnet/i, "Magnetism and electromagnets", ["Current flowing through a wire makes a magnetic field around it.", "An electromagnet is a coil of wire around an iron core; more turns or more current make it stronger.", "Like poles repel; opposite poles attract."]),
+  r(/symbol|schematic|zigzag/i, "Schematic symbols",["Zigzag = resistor. Two parallel lines = capacitor. Long and short lines = battery.", "Triangle pointing at a bar = diode. Coil of loops = inductor. A broken line with a lever = switch."]),
 ];
 
 const MC: Rule[] = [
