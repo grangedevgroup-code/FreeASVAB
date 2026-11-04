@@ -83,16 +83,18 @@ function tabs(tab: Tab | null) {
   ).join("")}</nav>`;
 }
 
-let lastTitle = "";
-
-export function page(tab: Tab | null, body: string, title: string, opts: { chrome?: boolean; keepScroll?: boolean; narrow?: boolean } = {}) {
+export function page(
+  tab: Tab | null,
+  body: string,
+  title: string,
+  opts: { chrome?: boolean; keepScroll?: boolean; narrow?: boolean; masthead?: string } = {},
+) {
   runLeave();
   const chrome = opts.chrome ?? true;
-  const enter = chrome && title !== lastTitle;
-  lastTitle = title;
-  document.title = title ? `${title} · FreeASVAB` : "FreeASVAB: Free ASVAB Practice Tests";
-  const cls = ["page", chrome ? "" : "bare", opts.narrow ? "narrow" : "", enter ? "enter" : ""].filter(Boolean).join(" ");
-  app.innerHTML = `${chrome ? header(tab) : ""}<main class="${cls}" id="main" tabindex="-1">${body}</main>${chrome ? tabs(tab) : ""}`;
+  document.title = title ? `${title} | FreeASVAB` : "FreeASVAB: Free ASVAB Practice Tests";
+  const cls = ["page", chrome ? "" : "bare", opts.narrow ? "narrow" : ""].filter(Boolean).join(" ");
+  const mast = opts.masthead ? `<div class="masthead"><div class="masthead-inner${opts.narrow ? " narrow" : ""}">${opts.masthead}</div></div>` : "";
+  app.innerHTML = `${chrome ? header(tab) : ""}<main class="${cls}" id="main" tabindex="-1">${mast}<div class="page-inner">${body}</div></main>${chrome ? tabs(tab) : ""}`;
   if (!opts.keepScroll) window.scrollTo(0, 0);
   const h = app.querySelector<HTMLElement>("main h1");
   if (h) {
