@@ -316,7 +316,7 @@ function chapterHtml(body, quizIds, chapterLinks) {
   const toc = [];
   const used = new Set();
   h = h.replace(/<h2>([\s\S]*?)<\/h2>/g, (_, inner) => {
-    const text = inner.replace(/<[^>]+>/g, "").replace(/&amp;/g, "&").replace(/&#39;/g, "'").replace(/&quot;/g, '"').trim();
+    const text = headingText(inner);
     let id = `s-${slug(text) || "section"}`;
     while (used.has(id)) id += "-2";
     used.add(id);
