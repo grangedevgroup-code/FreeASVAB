@@ -200,8 +200,6 @@ function renderQuestion(t: ActiveTest) {
   const p = passage(q.passage);
   const n = sec.qids.length;
   const multi = t.sections.length > 1;
-  const done = answeredCount(t);
-  const total = totalCount(t);
   const allowHints = t.allowHints ?? true;
   const hintOpen = !!t.hinted?.includes(qid);
   const title = multi ? esc(SUBTEST_NAMES[sec.subtest]) : esc(t.title);
