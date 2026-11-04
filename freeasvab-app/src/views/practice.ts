@@ -20,18 +20,18 @@ export const SUBJECT_INFO: Record<string, { about: string; lesson: string }> = {
   AO: { about: "Spatial puzzles: how shapes connect and fit together.", lesson: "assembling-objects" },
 };
 
-function subjectItem(k: string) {
+function subjectRow(k: string) {
   const st = subjectStats(k, load().qstats);
   const acc = accuracy(load().attempts, k);
   const seenPct = st.total ? Math.round((st.seen / st.total) * 100) : 0;
-  return `<a class="item subject" href="#/practice/${k}">
+  return `<a class="row" href="#/practice/${k}">
     ${badge(k)}
-    <span class="item-body">
+    <span class="row-main">
       <strong>${SUBTEST_NAMES[k as Subtest | "MF"]}</strong>
-      <small>${st.total} questions${k === "AR" || k === "MK" ? " + unlimited new ones" : ""} · ${seenPct}% seen</small>
-      <span class="meter thin" aria-hidden="true"><span style="width:${seenPct}%"></span></span>
+      <small>${st.total}${k === "AR" || k === "MK" ? "+" : ""} questions, ${seenPct}% seen</small>
+      <span class="meter" aria-hidden="true"><span style="width:${seenPct}%"></span></span>
     </span>
-    ${acc ? `<span class="pill" title="Correct in your last ${acc.n} answers">${acc.pct}%</span>` : ""}
+    <span class="row-data"><b>${acc ? `${acc.pct}%` : "–"}</b>recent</span>
     ${icon("next", "chev")}
   </a>`;
 }
@@ -41,23 +41,23 @@ export async function practice() {
   const missed = missedCount(load().qstats);
   page(
     "practice",
-    `<h1>Practice</h1>
-    <p class="lead">Pick a subject. You see the right answer and a full explanation after every question.</p>
-    ${missed ? `<a class="alert info link" href="#/start/review">${icon("redo")}<span><strong>Review ${plural(missed, "missed question")}</strong><br>Fixing mistakes is the fastest way to gain points.</span>${icon("next", "chev")}</a>` : ""}
-    <section aria-labelledby="afqt-h">
-      <h2 id="afqt-h" class="section-title">AFQT subjects<small>These decide whether you can enlist</small></h2>
-      <div class="list">${[...AFQT_PRACTICE, "MF"].map(subjectItem).join("")}</div>
+    `<div class="page-head"><h1>Practice</h1><p class="lead">Pick a subtest. You see the right answer and a full explanation after every question.</p></div>
+    ${missed ? `<a class="notice warn" href="#/start/review">${icon("redo")}<span><strong>Review ${plural(missed, "missed question")}</strong><br>Fixing mistakes is the fastest way to gain points.</span>${icon("next", "chev")}</a>` : ""}
+    <section class="panel" aria-labelledby="afqt-h">
+      <header class="panel-head"><h2 id="afqt-h">AFQT subtests</h2><span class="meta">Decide whether you can enlist</span></header>
+      <div class="rows">${[...AFQT_PRACTICE, "MF"].map(subjectRow).join("")}</div>
     </section>
-    <section aria-labelledby="career-h">
-      <h2 id="career-h" class="section-title">Career subjects<small>These decide which jobs you qualify for</small></h2>
-      <div class="list">${CAREER_PRACTICE.map(subjectItem).join("")}</div>
+    <section class="panel" aria-labelledby="career-h">
+      <header class="panel-head"><h2 id="career-h">Career subtests</h2><span class="meta">Decide which jobs you qualify for</span></header>
+      <div class="rows">${CAREER_PRACTICE.map(subjectRow).join("")}</div>
     </section>`,
     "Practice",
+    { narrow: true },
   );
 }
 
-function setItem(s: QuizSet) {
-  return `<a class="item" href="#/practice/set/${esc(s.id)}"><span class="item-body"><strong>${esc(s.title)}</strong><small>${esc(s.source)} · ${s.count} questions</small></span>${icon("next", "chev")}</a>`;
+function setRow(s: QuizSet) {
+  return `<a class="row" href="#/practice/set/${esc(s.id)}"><span class="row-main"><strong>${esc(s.title)}</strong><small>${esc(s.source)}</small></span><span class="row-data"><b>${s.count}</b>items</span>${icon("next", "chev")}</a>`;
 }
 
 export async function practiceSubject(k: string) {
@@ -75,27 +75,37 @@ export async function practiceSubject(k: string) {
   page(
     "practice",
     `<a class="back" href="#/practice">${icon("back")}Practice</a>
-    <div class="subject-head">${badge(k)}<div><h1>${name}</h1><p class="lead">${SUBJECT_INFO[k].about}</p></div></div>
-    <dl class="stats">
-      <div><dt>Questions</dt><dd>${st.total}${gen ? "+" : ""}</dd></div>
-      <div><dt>Seen</dt><dd>${st.seen}</dd></div>
-      <div><dt>Recent accuracy</dt><dd>${acc ? `${acc.pct}%` : "–"}</dd></div>
-      <div><dt>To review</dt><dd>${subjectMissed}</dd></div>
-    </dl>
-    <section class="card form" aria-labelledby="quick-h">
-      <h2 id="quick-h">Quick practice</h2>
-      <p class="hint">Mixes questions you have not seen with ones you missed before.</p>
-      <p class="field-label" id="count-label">How many questions?</p>
-      <div class="seg" role="radiogroup" aria-labelledby="count-label">
-        ${[10, 20, 30].map((n, i) => `<button type="button" role="radio" aria-checked="${i === 0}" data-n="${n}" class="${i === 0 ? "on" : ""}" ${n > st.total && !gen ? "disabled" : ""}>${n}</button>`).join("")}
-      </div>
-      <button class="btn primary wide" id="go" type="button">Start practice</button>
-      ${gen ? `<button class="btn wide" id="gen" type="button">Unlimited new ${k === "AR" ? "word problems" : "math problems"}</button>` : ""}
-      ${subjectMissed ? `<button class="btn wide" id="review" type="button">Review ${plural(subjectMissed, "missed question")}</button>` : ""}
+    <div class="subject-head">${badge(k, true)}<div class="page-head"><h1>${name}</h1><p class="lead">${SUBJECT_INFO[k].about}</p></div></div>
+    <section class="panel" aria-labelledby="rec-h">
+      <header class="panel-head"><h2 id="rec-h">Your record</h2></header>
+      <dl class="kv">
+        <div><dt>Questions</dt><dd>${st.total}${gen ? "+" : ""}</dd></div>
+        <div><dt>Seen</dt><dd>${st.seen}</dd></div>
+        <div><dt>Recent accuracy</dt><dd>${acc ? `${acc.pct}%` : "–"}</dd></div>
+        <div><dt>To review</dt><dd>${subjectMissed}</dd></div>
+      </dl>
     </section>
-    <a class="item lesson-link" href="#/learn/${SUBJECT_INFO[k].lesson}">${icon("book")}<span class="item-body"><strong>Read the ${name} lesson</strong><small>Plain-English explanations, examples and tips</small></span>${icon("next", "chev")}</a>
-    ${sets.length ? `<h2 class="section-title">Practice sets<small>Fixed sets from the study guide</small></h2><div class="list">${sets.map(setItem).join("")}</div>` : ""}`,
+    <section class="panel form" aria-labelledby="quick-h">
+      <header class="panel-head"><h2 id="quick-h">Quick practice</h2><span class="meta">Unseen and missed first</span></header>
+      <div class="panel-body">
+        <p class="field-label" id="count-label">How many questions?</p>
+        <div class="seg" role="radiogroup" aria-labelledby="count-label">
+          ${[10, 20, 30].map((n, i) => `<button type="button" role="radio" aria-checked="${i === 0}" data-n="${n}" class="${i === 0 ? "on" : ""}" ${n > st.total && !gen ? "disabled" : ""}>${n}</button>`).join("")}
+        </div>
+        <button class="btn signal wide" id="go" type="button">Start practice</button>
+        ${gen ? `<button class="btn wide" id="gen" type="button">Unlimited new ${k === "AR" ? "word problems" : "math problems"}</button>` : ""}
+        ${subjectMissed ? `<button class="btn wide" id="review" type="button">Review ${plural(subjectMissed, "missed question")}</button>` : ""}
+      </div>
+    </section>
+    <section class="panel" aria-labelledby="study-h">
+      <header class="panel-head"><h2 id="study-h">Study material</h2></header>
+      <div class="rows">
+        <a class="row" href="#/learn/${SUBJECT_INFO[k].lesson}">${icon("book")}<span class="row-main"><strong>${name} lesson</strong><small>Plain-English explanations, examples and tips</small></span>${icon("next", "chev")}</a>
+        ${sets.map(setRow).join("")}
+      </div>
+    </section>`,
     `${name} practice`,
+    { narrow: true },
   );
   let n = 10;
   app.querySelectorAll<HTMLButtonElement>(".seg button").forEach((btn) =>
@@ -129,15 +139,21 @@ export async function practiceSet(id: string) {
   page(
     "practice",
     `<a class="back" href="#/practice/${esc(s.subtest)}">${icon("back")}${SUBTEST_NAMES[s.subtest as Subtest | "MF"]}</a>
-    <h1>${esc(s.title)}</h1>
-    <p class="lead">${esc(s.source)} · ${s.count} questions${minutes ? ` · suggested time ${minutes} minutes` : ""}</p>
-    <section class="card form" aria-labelledby="mode-h">
-      <h2 id="mode-h">How do you want to work?</h2>
-      <label class="switch radio"><input type="radio" name="mode" value="learn" checked><span><strong>Learn mode</strong><small>See the answer and explanation after each question</small></span></label>
-      <label class="switch radio"><input type="radio" name="mode" value="test"><span><strong>Test mode</strong><small>${minutes ? `Timed at ${minutes} minutes, ` : ""}answers at the end</small></span></label>
-      <button class="btn primary wide" id="go" type="button">Start</button>
+    <div class="subject-head">${badge(s.subtest, true)}<div class="page-head"><h1>${esc(s.title)}</h1><p class="lead">${esc(s.source)}</p></div></div>
+    <section class="panel" aria-labelledby="facts-h">
+      <header class="panel-head"><h2 id="facts-h">Set details</h2></header>
+      <dl class="kv"><div><dt>Items</dt><dd>${s.count}</dd></div><div><dt>Suggested time</dt><dd>${minutes ? `${minutes} min` : "–"}</dd></div></dl>
+    </section>
+    <section class="panel form" aria-labelledby="mode-h">
+      <header class="panel-head"><h2 id="mode-h">Mode</h2></header>
+      <div class="panel-body">
+        <label class="switch"><input type="radio" name="mode" value="learn" checked><span><strong>Learn mode</strong><small>See the answer and explanation after each question</small></span></label>
+        <label class="switch"><input type="radio" name="mode" value="test"><span><strong>Test mode</strong><small>${minutes ? `Timed at ${minutes} minutes, ` : ""}answers at the end</small></span></label>
+        <button class="btn signal wide" id="go" type="button">Start</button>
+      </div>
     </section>`,
     s.title,
+    { narrow: true },
   );
   document.getElementById("go")!.addEventListener("click", async () => {
     const test = (app.querySelector('input[name="mode"]:checked') as HTMLInputElement).value === "test";
