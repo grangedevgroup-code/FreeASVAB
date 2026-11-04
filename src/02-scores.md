@@ -181,6 +181,6 @@ These ranges are a rough rule of thumb, **not** an official conversion. Real tes
 
 - Each subtest gives a **standard score** (average 50).
 - **AFQT = 2 × VE + AR + MK**, reported as a percentile from 1 to 99. Verbal is about **half**.
-- **70–80 = Category II**, well above every branch's minimum.
+- **31** is the usual minimum to enlist with a diploma; **50+** (Category IIIA) opens more incentives; **65+** is Category II.
 - **Line scores** decide jobs; VE and AR appear in most of them.
 - Retest waits: **1 month, 1 month, then 6 months**. Your **most recent** score counts. Scores last **2 years**.
