@@ -82,7 +82,7 @@ export async function startScreen(kind: string) {
         <li><strong>Stop whenever you need to.</strong> Your place is saved and the clock pauses while you are away.</li>
       </ul>`,
     )}
-    <button class="btn primary big wide" id="go" type="button">Begin the ${t.title.toLowerCase()}</button>`,
+    <button class="btn primary big wide" id="go" type="button">Begin the test</button>`,
     t.title,
     { narrow: true },
   );
