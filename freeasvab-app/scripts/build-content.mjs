@@ -372,7 +372,16 @@ function main() {
   }
 
   const quizCounts = new Map(sets.map((s) => [s.id, s.count]));
-  const learn = chapters.map((c) => ({ id: slug(c.title), title: c.title, sub: c.sub, label: c.label, file: c.file }));
+  const learn = chapters.map((c) => ({
+    id: slug(c.title),
+    title: c.title,
+    sub: c.sub,
+    group: lessonGroup(c.file),
+    subtest: LESSON_SUBTEST[c.file.slice(0, 2)] ?? null,
+    file: c.file,
+  }));
+  const chapterLinks = new Map();
+  for (const l of learn) if (!chapterLinks.has(l.file.slice(0, 2))) chapterLinks.set(l.file.slice(0, 2), { id: l.id, title: l.title });
   const ids = new Set();
   for (const c of learn) {
     if (ids.has(c.id)) problems.push(`duplicate chapter id ${c.id}`);
