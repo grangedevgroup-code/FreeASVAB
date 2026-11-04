@@ -28,7 +28,7 @@ export function testMeta(kind: TestKind) {
   const t = TESTS[kind];
   const qs = t.rows.reduce((n, r) => n + r.count, 0);
   const mins = t.rows.reduce((n, r) => n + r.minutes, 0);
-  return { questions: qs, minutes: mins, label: kind === "quick" ? `${qs} questions · about 15 min` : `${qs} questions · up to ${fmtMinutes(mins)}` };
+  return { questions: qs, minutes: mins, label: kind === "quick" ? `${qs} questions, about 15 minutes` : `${qs} questions, up to ${fmtMinutes(mins)}` };
 }
 
 export async function startScreen(kind: string) {
