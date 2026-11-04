@@ -193,36 +193,21 @@ const AR: Rule[] = [
     ],
   ),
   r(
-    /at (this|that|the same) (rate|pace|speed)|per gallon|mileage|pages per|per minute|best buy|uses \d+ gallons?|cost \$|for \$/i,
-    "Unit rates",
-    [
-      "Find the amount for ONE unit first (one item, one gallon, one minute).",
-      "Then multiply by how many units you need, or divide the money you have by the price of one.",
-      "To compare deals, compare the price per unit.",
-    ],
-  ),
-  r(
     /plus \$?[\d.]+ per|per day plus|flat fee|fee of/i,
     "Fixed cost plus a rate",
     ["Total = fixed amount + (rate × number of units).", "Do the multiplication first, then add the fixed part."],
   ),
   r(
-    /ratio|for every|proportion|scale|map|blueprint|represents/i,
-    "Ratios and proportions",
+    /at (this|that|the same) (rate|pace|speed)|per gallon|mileage|pages per|per (minute|hour|day|kilometer|mile)|\bpace\b|best buy|uses \d+ gallons?|cost \$|for \$|recipe|serves|servings|for \d+ people/i,
+    "Unit rates",
     [
-      "Set up two equal fractions with matching units in the same places.",
-      "Cross-multiply and solve.",
-      "To split a total in the ratio a:b, divide the total by (a + b) to get one part, then multiply.",
+      "Find the amount for ONE unit first (one item, one serving, one gallon, one minute).",
+      "Then multiply by how many units you need, or divide the total by the amount per unit.",
+      "To compare deals, compare the price per unit.",
     ],
-    "Keep the order of the ratio the same on both sides.",
   ),
   r(
-    /per hour|per week|earns|hourly|paycheck|salary|overtime/i,
-    "Pay and rates",
-    ["Total pay = rate × number of hours (or weeks).", "Overtime is usually 1.5 × the hourly rate for the extra hours.", "Check whether the question wants the total or the difference."],
-  ),
-  r(
-    /how many .* needed|boxes|containers|trips|buses|vans/i,
+    /(boxes|containers|trips|buses|vans|trucks|bags|crates)\b[\s\S]*needed|how many (boxes|containers|trips|buses|vans|bags|crates)/i,
     "How many are needed",
     ["Divide the total by how much one holds.", "If there is a remainder, round UP: you cannot use part of a box."],
     "Rounding down leaves some items without a box.",
