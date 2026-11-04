@@ -298,7 +298,7 @@ const MC: Rule[] = [
   r(/least effort|arrangement|mechanical advantage/i, "Comparing mechanical advantage", ["Work out the mechanical advantage of each choice: strands for pulleys, arm lengths for levers, length ÷ height for ramps.", "The highest mechanical advantage needs the least effort."]),
   r(/work|foot-pound/i, "Work", ["Work = force × distance moved in the direction of the force.", "No movement means no work, however hard you push."]),
   r(/spring/i, "Springs", ["Stretch is proportional to force: find the stretch per pound, then multiply."]),
-  r(/stable|tip|center of gravity|support|beam|board|plank|bridge|truss|strongest/i, "Stability and structures", ["A low center of gravity and a wide base are most stable.", "A load centered between two supports is shared equally; nearer one support puts more weight on that support.", "A board standing on its edge is much stiffer than one lying flat."]),
+  r(/stable|tip|center of gravity|support|beam|board|plank|bridge|truss|strongest|frame|rigid|triangle/i, "Stability and structures", ["A low center of gravity and a wide base are most stable.", "A load centered between two supports is shared equally; nearer one support puts more weight on that support.", "A board standing on its edge is much stiffer than one lying flat."]),
 ];
 
 const PC: Rule[] = [
