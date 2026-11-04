@@ -1175,6 +1175,9 @@ table.plain tfoot td {
   font-weight: 600;
   text-decoration: none;
 }
+a.subject-cell {
+  min-height: 44px;
+}
 .bar-cell {
   width: 35%;
 }
