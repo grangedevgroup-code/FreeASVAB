@@ -179,7 +179,12 @@ const AR: Rule[] = [
     "Convert square feet to square yards by dividing by 9, not 3.",
   ),
   r(
-    /\bmph\b|miles per hour|speed|how far|travels|flies|drives|convoy|train|knots/i,
+    /\bmap\b|blueprint|scale drawing|represents|\d+ inch(es)? ?=/i,
+    "Maps and scale drawings",
+    ["Write the scale as a ratio: map distance ÷ real distance.", "Set up a proportion with the new map distance and cross-multiply.", "Change mixed numbers (3½) to improper fractions or decimals first."],
+  ),
+  r(
+    /\bmph\b|miles per hour|speed|how far|travels|flies|drives|convoy|\btrains?\b|knots/i,
     "Distance, rate and time",
     [
       "Distance = rate × time; rate = distance ÷ time; time = distance ÷ rate.",
