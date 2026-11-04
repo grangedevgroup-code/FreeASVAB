@@ -139,7 +139,8 @@ export function about() {
     "settings",
     `<a class="back" href="#/settings">${icon("back")}Settings</a>
     <article class="lesson">
-      <h1>About FreeASVAB</h1>
+      <div class="page-head"><h1>About FreeASVAB</h1></div>
+      <div class="lesson-body">
       <p>FreeASVAB is a free, open-source practice app for the Armed Services Vocational Aptitude Battery. There are no accounts, ads or payments, and your results never leave your device.</p>
       <h2>How scores are estimated</h2>
       <p>The real computer ASVAB is adaptive: each question is picked based on your earlier answers, and your score comes from official tables built from a 1997 national sample of 18 to 23 year olds. Those tables and question difficulties are not public, so no practice app can give an exact score.</p>
