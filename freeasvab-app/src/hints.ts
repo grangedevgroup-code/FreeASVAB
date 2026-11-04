@@ -96,7 +96,7 @@ const AR: Rule[] = [
     ],
   ),
   r(
-    /% off|percent off|discount|on sale|sale price|sales tax|\btax\b|\btip\b|commission/i,
+    /% off|percent off|discount|on sale|sale price|sales tax|\btax\b|\btip\b|marked down/i,
     "Discounts and tax",
     [
       "Find the percent of the price: price × percent as a decimal.",
