@@ -297,7 +297,17 @@ function chapterHtml(body, quizIds, chapterLinks) {
   t = boxes(t);
   let h = md(t);
   h = h.replace(/<table>/g, '<div class="table-wrap"><table>').replace(/<\/table>/g, "</table></div>");
-  return h;
+  const toc = [];
+  const used = new Set();
+  h = h.replace(/<h2>([\s\S]*?)<\/h2>/g, (_, inner) => {
+    const text = inner.replace(/<[^>]+>/g, "").replace(/&amp;/g, "&").replace(/&#39;/g, "'").replace(/&quot;/g, '"').trim();
+    let id = `s-${slug(text) || "section"}`;
+    while (used.has(id)) id += "-2";
+    used.add(id);
+    toc.push({ id, text });
+    return `<h2 id="${id}">${inner}</h2>`;
+  });
+  return { html: h, toc };
 }
 
 function main() {
