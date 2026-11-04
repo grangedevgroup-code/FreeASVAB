@@ -56,20 +56,16 @@ export async function lesson(id: string) {
     "learn",
     `<a class="back" href="#/learn">${icon("back")}Learn</a>
     <article class="lesson">
-      <header class="lesson-head">
-        ${l.subtest ? badge(l.subtest, true) : ""}
-        <div class="page-head"><h1>${esc(l.title)}</h1>${l.sub ? `<p class="lead">${esc(l.sub)}</p>` : ""}</div>
+      <header class="page-head${l.subtest ? " with-tile" : ""}">
+        ${l.subtest ? tile(l.subtest, true) : ""}
+        <div><h1>${esc(l.title)}</h1>${l.sub ? `<p class="lead">${esc(l.sub)}</p>` : ""}</div>
       </header>
       ${subject ? `<div class="actions"><a class="btn primary" href="#/practice/${esc(l.subtest!)}">Practice ${esc(subject)}</a></div>` : ""}
-      ${l.toc.length > 2 ? `<details class="toc"><summary>On this page: ${l.toc.length} sections</summary><ol></ol></details>` : ""}
+      ${l.toc.length > 2 ? `<details class="list disclosure toc"><summary class="item"><span class="item-main"><strong>On this page</strong><small>${l.toc.length} sections</small></span></summary><ol></ol></details>` : ""}
       <div class="lesson-body">${l.html}</div>
       <footer class="lesson-foot">
-        ${subject ? `<a class="btn signal" href="#/practice/${esc(l.subtest!)}">Practice ${esc(subject)} now</a>` : ""}
-        ${
-          nextLesson
-            ? `<section class="panel"><header class="panel-head"><h2>Next lesson</h2></header><div class="rows">${lessonRow(nextLesson)}</div></section>`
-            : ""
-        }
+        ${subject ? `<a class="btn primary" href="#/practice/${esc(l.subtest!)}">Practice ${esc(subject)} now</a>` : ""}
+        ${nextLesson ? section("next-h", "Next lesson", `<div class="list">${lessonRow(nextLesson)}</div>`) : ""}
       </footer>
     </article>`,
     l.title,
