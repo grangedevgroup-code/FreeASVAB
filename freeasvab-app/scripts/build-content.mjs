@@ -347,7 +347,11 @@ function main() {
         continue;
       }
       const q = it.q;
-      const id = `${z.id}-${++n}`;
+      const legacy = `${z.id}-${++n}`;
+      const fingerprint = q.text.join("\n").trim() + "\u0000" + q.choices.join("\u0001");
+      const id = `${z.id}-${createHash("sha256").update(fingerprint).digest("hex").slice(0, 8)}`;
+      if (ids.includes(id)) problems.push(`${z.id}: two questions have the same text and choices (${legacy})`);
+      aliases[legacy] = id;
       ids.push(id);
       const entry = {
         id,
