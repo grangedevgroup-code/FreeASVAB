@@ -69,13 +69,10 @@ export async function run() {
 }
 
 function steps(t: ActiveTest) {
-  return `<ol class="steps" aria-label="Test parts">${t.sections
-    .map((s, i) => {
-      const state = i < t.section ? "done" : i === t.section ? "now" : "";
-      const label = `${SUBTEST_NAMES[s.subtest]}${state === "done" ? ", finished" : state === "now" ? ", current part" : ""}`;
-      return `<li class="${state}" ${state === "now" ? 'aria-current="step"' : ""}><span class="sr-only">${label}</span></li>`;
-    })
-    .join("")}</ol>`;
+  const label = `Part ${t.section + 1} of ${t.sections.length}. ${t.section ? `Finished: ${t.sections.slice(0, t.section).map((s) => SUBTEST_NAMES[s.subtest]).join(", ")}.` : ""}`;
+  return `<div class="steps" role="img" aria-label="${esc(label)}">${t.sections
+    .map((_, i) => `<span class="${i < t.section ? "done" : i === t.section ? "now" : ""}"></span>`)
+    .join("")}</div>`;
 }
 
 const TIPS: Record<string, string> = {
