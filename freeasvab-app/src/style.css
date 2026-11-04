@@ -29,6 +29,7 @@
   --warn: #8a6300;
   --warn-tint: #faf0d4;
   --min-line: #ff8f80;
+  --mast-edge: transparent;
   --focus: #1c2015;
   --band0: #4d5e2b;
   --band1: #6c7f3b;
@@ -82,6 +83,7 @@
     --warn: #e6b13a;
     --warn-tint: #352b10;
     --focus: #e6b13a;
+    --mast-edge: #2d3323;
     color-scheme: dark;
   }
 }
@@ -117,6 +119,7 @@
   --warn: #e6b13a;
   --warn-tint: #352b10;
   --focus: #e6b13a;
+  --mast-edge: #2d3323;
   color-scheme: dark;
 }
 
@@ -405,6 +408,7 @@ details > summary::-webkit-details-marker {
 }
 
 .masthead {
+  border-bottom: 1px solid var(--mast-edge);
   background: var(--field);
   color: var(--on-field);
   --focus: var(--brass);
@@ -558,7 +562,7 @@ details > summary::-webkit-details-marker {
 }
 .sc-muted {
   fill: var(--on-field-2);
-  font: 600 10px var(--font-body);
+  font: 600 11px var(--font-body);
 }
 .sc-label {
   fill: var(--on-field);
