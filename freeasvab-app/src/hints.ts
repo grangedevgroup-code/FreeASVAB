@@ -392,7 +392,7 @@ export function plainText(html: string) {
 
 export function hintFor(subtest: string, html: string): Hint {
   const text = plainText(html);
-  if (subtest === "WK") return /most nearly means/i.test(text) && text.split(" ").length < 8 ? WK_VOCAB : /most nearly means/i.test(text) ? WK_VOCAB : WK_CONTEXT;
+  if (subtest === "WK") return /^\S+ most nearly means/i.test(text) ? WK_VOCAB : WK_CONTEXT;
   if (subtest === "AO") return /connected|points A and B/i.test(text) ? AO_CONNECT : AO_PUZZLE;
   for (const rule of RULES[subtest] ?? []) if (rule.test.test(text)) return rule.hint;
   return FALLBACK[subtest === "MF" ? "MK" : subtest] ?? FALLBACK.GENERIC;
