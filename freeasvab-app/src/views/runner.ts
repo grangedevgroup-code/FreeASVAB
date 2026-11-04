@@ -203,14 +203,13 @@ function renderQuestion(t: ActiveTest) {
         ${q.instr && t.index === 0 ? `<p class="instr">${q.instr}</p>` : ""}
         <div class="qtext" id="qtext">${q.text}</div>
         ${allowHints ? howTo(q.subtest, q.text, hintOpen) : ""}
-        <fieldset class="choices ${q.figChoices ? "figs" : ""}" ${isChecked ? "disabled" : ""}>
-          <legend class="sr-only">Answer choices</legend>
+        <fieldset class="choices ${q.figChoices ? "figs" : ""}" aria-label="Answer choices" ${isChecked ? "disabled" : ""}>
           ${q.choices
             .map((c, i) => {
               let cls = chosen === i ? "sel" : "";
               if (isChecked) cls += i === q.answer ? " right" : chosen === i ? " wrong" : "";
-              const mark = isChecked && i === q.answer ? `<span class="sr-only"> (correct answer)</span>` : isChecked && chosen === i ? `<span class="sr-only"> (your answer)</span>` : "";
-              return `<label class="choice ${cls}"><input type="radio" name="answer" value="${i}" ${chosen === i ? "checked" : ""}><span class="letter" aria-hidden="true">${LETTERS[i]}</span><span class="ctext">${c}${mark}</span></label>`;
+              const mark = isChecked && i === q.answer ? `<span class="tag tag-ok">Answer</span>` : isChecked && chosen === i ? `<span class="tag tag-bad">Yours</span>` : "";
+              return `<label class="choice ${cls}"><input type="radio" name="answer" value="${i}" ${chosen === i ? "checked" : ""}><span class="letter" aria-hidden="true">${LETTERS[i]}</span><span class="ctext">${c}</span>${mark}</label>`;
             })
             .join("")}
         </fieldset>
