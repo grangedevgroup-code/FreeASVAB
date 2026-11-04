@@ -76,9 +76,9 @@ These are the published minimums for applicants with a **high school diploma**, 
 Minimum scores and education rules change with each service's recruiting needs, and a service can require more than its minimum when it has plenty of applicants. Meeting the minimum also does **not** mean you qualify for the job you want. Always confirm current requirements with a recruiter.
 :::
 
-## What a 70–80 AFQT Gets You
+## What a Higher Score Gets You
 
-An AFQT of 70 to 80 puts you solidly in **Category II** — ahead of 70 to 80 percent of the reference group. That score:
+Every point above the minimum helps. An AFQT of 65 or higher puts you in **Category II** — ahead of about two-thirds of the reference group or more. A score like that:
 
 - Clears the minimum of **every branch** by a wide margin, including the stricter GED and no-credential minimums.
 - Usually means your **verbal and math** subtest scores are strong — and those subtests appear in most line scores, so many more jobs open up.
