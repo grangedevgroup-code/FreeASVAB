@@ -48,8 +48,11 @@ self.addEventListener("fetch", (e) => {
   };
 }
 
+const pkg = JSON.parse(readFileSync(new URL("./package.json", import.meta.url), "utf8")) as { version: string };
+
 export default defineConfig({
   base: "./",
-  build: { target: "es2020" },
+  define: { __APP_VERSION__: JSON.stringify(pkg.version) },
+  build: { target: ["es2020", "chrome80", "safari14", "firefox78"] },
   plugins: [serviceWorker()],
 });
