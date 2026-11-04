@@ -395,12 +395,23 @@ function main() {
 
   rmSync(OUT, { recursive: true, force: true });
   mkdirSync(join(OUT, "learn"), { recursive: true });
-  const bank = JSON.stringify({ questions, passages, sets });
+  const lessons = chapters.map((c, i) => {
+    const { html, toc } = chapterHtml(c.body, quizCounts, chapterLinks);
+    if (/\bChapter \d+\b/.test(html.replace(/<[^>]+>/g, ""))) problems.push(`${c.file}: unresolved chapter reference`);
+    const { file, ...meta } = learn[i];
+    return { ...meta, html, toc };
+  });
+  if (problems.length) {
+    console.error(`Content problems (${problems.length}):\n` + problems.map((p) => `  ${p}`).join("\n"));
+    process.exit(1);
+  }
+
+  rmSync(OUT, { recursive: true, force: true });
+  mkdirSync(join(OUT, "learn"), { recursive: true });
+  const bank = JSON.stringify({ questions, passages, sets, aliases });
   const version = createHash("sha256").update(bank).digest("hex").slice(0, 12);
   writeFileSync(join(OUT, "bank.json"), bank);
-  chapters.forEach((c, i) => {
-    writeFileSync(join(OUT, "learn", `${learn[i].id}.json`), JSON.stringify({ ...learn[i], html: chapterHtml(c.body, quizCounts) }));
-  });
+  for (const l of lessons) writeFileSync(join(OUT, "learn", `${l.id}.json`), JSON.stringify(l));
   writeFileSync(join(OUT, "index.json"), JSON.stringify({ version, questionCount: questions.length, learn: learn.map(({ file, ...l }) => l) }));
   const by = {};
   for (const q of questions) by[q.subtest] = (by[q.subtest] || 0) + 1;
