@@ -235,7 +235,8 @@ function renderQuestion(t: ActiveTest) {
         </div>
       </div></div>
       <footer class="exam-foot"><div class="exam-foot-inner">
-        <p class="exam-foot-note">${t.strict && !t.instant ? "Answers are final once you move on." : ""}<span class="keys" aria-hidden="true">Press 1 to 4 or A to D to choose, then Enter.</span></p>
+        ${t.strict && !t.instant ? `<p class="exam-foot-note">Answers are final once you move on.</p>` : ""}
+        <p class="keys" aria-hidden="true">Press 1 to 4 or A to D to choose, then Enter.</p>
         <div class="exam-actions">
           ${!t.strict && !t.instant && t.index > 0 ? `<button class="btn" id="prev" type="button">${icon("back")}Back</button>` : ""}
           ${!t.strict && !t.instant && chosen === undefined ? `<button class="btn quiet" id="skip" type="button">Skip</button>` : ""}
