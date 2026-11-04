@@ -90,7 +90,7 @@ export function results(id: string) {
     ${focus}
     <section class="card" aria-labelledby="subj-h"><h2 id="subj-h">By subject</h2>
       <div class="table-wrap"><table class="subject-table">
-        <thead><tr><th scope="col">Subject</th><th scope="col" class="num">Correct</th><th scope="col"><span class="sr-only">Bar</span></th>${s ? `<th scope="col" class="num">Score</th>` : ""}</tr></thead>
+        <thead><tr><th scope="col">Subject</th><th scope="col" class="num">Correct</th><th aria-hidden="true"></th>${s ? `<th scope="col" class="num">Score</th>` : ""}</tr></thead>
         <tbody>${order
           .map((k) => {
             const r = a.raw[k]!;

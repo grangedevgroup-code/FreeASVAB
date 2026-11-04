@@ -42,10 +42,6 @@ async function route() {
   }
 }
 
-document.addEventListener("click", (e) => {
-  if ((e.target as HTMLElement).closest("[data-skip]")) document.getElementById("main")?.focus();
-});
-
 document.addEventListener("visibilitychange", () => {
   if (document.visibilityState === "hidden") {
     pauseClock();

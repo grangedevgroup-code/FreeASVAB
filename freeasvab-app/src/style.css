@@ -227,29 +227,6 @@ details.passage[open] summary::after,
   border: 0;
 }
 
-.skip {
-  position: absolute;
-  top: calc(var(--sat) + 8px);
-  left: 8px;
-  z-index: 100;
-  padding: 10px 14px;
-  border: 2px solid var(--accent);
-  background: var(--surface);
-  color: var(--accent);
-  font: inherit;
-  font-weight: 700;
-  clip-path: inset(50%);
-  width: 1px;
-  height: 1px;
-  overflow: hidden;
-  white-space: nowrap;
-}
-.skip:focus {
-  clip-path: none;
-  width: auto;
-  height: auto;
-}
-
 .ic {
   width: 1.2em;
   height: 1.2em;
@@ -937,7 +914,8 @@ details.passage[open] summary::after,
 }
 .sc-muted {
   fill: var(--muted);
-  font-size: 9px;
+  font-size: 10.5px;
+  font-weight: 600;
 }
 .sc-label {
   fill: var(--text);
@@ -1287,19 +1265,17 @@ a.subject-cell {
   display: flex;
   gap: 4px;
   margin: 0 0 20px;
-  padding: 0;
-  list-style: none;
 }
-.steps li {
+.steps span {
   flex: 1;
   height: 8px;
   border-radius: 2px;
   background: var(--line);
 }
-.steps li.done {
+.steps span.done {
   background: var(--accent-dark);
 }
-.steps li.now {
+.steps span.now {
   background: var(--accent);
   box-shadow: 0 0 0 2px var(--bg), 0 0 0 4px var(--accent);
 }
@@ -1398,7 +1374,9 @@ details.passage {
   max-height: none;
 }
 details.passage summary {
-  min-height: 40px;
+  display: flex;
+  align-items: center;
+  min-height: 44px;
   font-weight: 700;
   cursor: pointer;
 }
@@ -1883,7 +1861,7 @@ figcaption {
 .table-view summary {
   display: flex;
   align-items: center;
-  min-height: 40px;
+  min-height: 44px;
   color: var(--accent);
   font-size: 0.9rem;
   font-weight: 700;
@@ -1998,4 +1976,15 @@ figcaption {
     stroke: CanvasText;
     stroke-width: 0.5;
   }
+}
+
+.field-label {
+  font-weight: 700;
+}
+.group-row th {
+  padding-top: 18px;
+  color: var(--muted);
+  font-size: 0.78rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
 }

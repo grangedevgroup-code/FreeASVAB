@@ -66,7 +66,7 @@ export function home() {
         <h2 id="goal-h">${icon("target")}What AFQT score are you aiming for?</h2>
         <p class="hint">It sets the goal line on your charts. You can change it any time in Settings.</p>
         <div class="presets">${GOAL_PRESETS.map((g) => `<button type="button" class="preset" data-goal="${g.v}"><strong>${g.v}</strong><span>${g.label}</span></button>`).join("")}</div>
-        <button type="button" class="btn ghost small" data-goal="skip">Not sure yet</button>
+        <button type="button" class="btn ghost" data-goal="skip">Not sure yet</button>
       </section>`
     : "";
 

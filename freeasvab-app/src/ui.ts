@@ -76,7 +76,7 @@ export function page(tab: Tab | null, body: string, title: string, opts: { chrom
   runLeave();
   const chrome = opts.chrome ?? true;
   document.title = title ? `${title} · FreeASVAB` : "FreeASVAB: Free ASVAB Practice Tests";
-  app.innerHTML = `<button class="skip" type="button" data-skip>Skip to main content</button>${chrome ? header(tab) : ""}<main class="page${chrome ? "" : " bare"}" id="main" tabindex="-1">${body}</main>${chrome ? tabs(tab) : ""}`;
+  app.innerHTML = `${chrome ? header(tab) : ""}<main class="page${chrome ? "" : " bare"}" id="main" tabindex="-1">${body}</main>${chrome ? tabs(tab) : ""}`;
   if (!opts.keepScroll) window.scrollTo(0, 0);
   const h = app.querySelector<HTMLElement>("main h1");
   if (h) {
