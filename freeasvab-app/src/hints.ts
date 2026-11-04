@@ -333,6 +333,11 @@ const AI: Rule[] = [
 ];
 
 const SI: Rule[] = [
+  r(/fire|extinguisher/i, "Fire safety", ["Class A: ordinary combustibles (wood, paper, cloth). Class B: flammable liquids and gases (gasoline, oil, paint). Class C: energized electrical equipment. Class D: burning metals.", "Never use water on electrical or grease fires."]),
+  r(/board feet|board foot|inches thick|1 inch thick/i, "Board feet", ["One board foot is 1 inch thick × 12 inches wide × 12 inches long (144 cubic inches).", "Board feet = thickness (in) × width (in) × length (in) ÷ 144."]),
+  r(/joint|dovetail|mortise|tenon|dado|rabbet/i, "Wood joints", ["Dovetail: interlocking pins and tails, very strong for drawers.", "Mortise and tenon: a tongue fits into a slot, used for frames and furniture. Dado: a groove across the grain; rabbet: a step cut along an edge."]),
+  r(/sandpaper|grit|abrasive/i, "Sandpaper", ["A LOWER grit number is coarser; a higher number is finer.", "Start with coarse grit on rough wood, then move to finer grits for a smooth finish."]),
+  r(/pipe|burr|ream|plumb(?!b)/i, "Pipe tools", ["A pipe cutter cuts pipe cleanly; a reamer removes the burr left inside after cutting.", "Pipe wrenches grip round pipe; threads on pipe are cut with a pipe die."]),
   r(/saw\b|saws|hacksaw|coping|rip|crosscut/i, "Saws", ["Rip saw: with the grain. Crosscut saw: across the grain.", "Hacksaw: metal. Coping saw: curves and detail. Hole saw: large round holes."]),
   r(/tap\b|die\b|thread/i, "Threads", ["A tap cuts threads INSIDE a hole.", "A die cuts threads on the OUTSIDE of a rod."]),
   r(/level|plumb|square|micrometer|caliper|measure|tape|ruler|gauge/i, "Measuring and layout", ["A level shows horizontal and vertical; a plumb bob shows true vertical.", "A framing square checks 90° angles; a micrometer measures very small distances precisely."]),
