@@ -471,7 +471,10 @@ details.passage[open] summary::after,
   height: 18px;
 }
 .linkish {
-  padding: 6px 0;
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 4px 0;
   border: 0;
   background: none;
   color: var(--accent);
