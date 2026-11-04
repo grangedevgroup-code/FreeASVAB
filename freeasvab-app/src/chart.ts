@@ -30,12 +30,34 @@ export function scoreScale(o: { score: number; low?: number; high?: number; goal
       <text class="sc-label" x="${labelX.toFixed(1)}" y="9" text-anchor="middle">${o.score}</text>
     </svg>
     <figcaption class="scale-key">
-      <span><i class="k-you" aria-hidden="true"></i>You${o.low !== undefined ? ` (likely ${o.low}–${o.high})` : ""}</span>
+      <span><i class="k-you" aria-hidden="true"></i>You${o.low !== undefined ? `, likely ${o.low} to ${o.high}` : ""}</span>
       <span><i class="k-goal" aria-hidden="true"></i>Goal ${o.goal}</span>
       <span><i class="k-min" aria-hidden="true"></i>Minimum ${o.min}</span>
-      <span>Bands are AFQT categories</span>
     </figcaption>
   </figure>`;
+}
+
+export function answerSheet() {
+  const marks = [2, 0, 3, 1, 1, -1, 2];
+  const rows = marks
+    .map((m, r) => {
+      const y = 58 + r * 30;
+      const bubbles = [0, 1, 2, 3]
+        .map((c) => {
+          const x = 74 + c * 40;
+          return m === c
+            ? `<circle class="as-fill" cx="${x}" cy="${y}" r="10.5"/>`
+            : `<circle class="as-ring" cx="${x}" cy="${y}" r="10.5"/><text class="as-letter" x="${x}" y="${y + 4}" text-anchor="middle">${"ABCD"[c]}</text>`;
+        })
+        .join("");
+      return `<text class="as-num" x="40" y="${y + 4}" text-anchor="end">${r + 1}</text>${bubbles}`;
+    })
+    .join("");
+  return `<svg class="answer-sheet" viewBox="0 0 260 280" aria-hidden="true" focusable="false">
+    <rect class="as-sheet" x="8" y="8" width="244" height="264" rx="6"/>
+    <path class="as-rule" d="M24 32h120M24 40h70"/>
+    ${rows}
+  </svg>`;
 }
 
 export function trendChart(points: { t: number; v: number }[], target: number) {
