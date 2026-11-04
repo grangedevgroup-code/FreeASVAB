@@ -254,6 +254,7 @@ details > summary::-webkit-details-marker {
   z-index: 20;
   padding: calc(var(--sat) + 8px) max(16px, var(--sar)) 8px max(16px, var(--sal));
   background: var(--field);
+  box-shadow: 0 1px 0 var(--field);
   color: var(--on-field);
   --focus: var(--brass);
 }
