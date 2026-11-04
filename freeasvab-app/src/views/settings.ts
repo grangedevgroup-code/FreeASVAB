@@ -9,6 +9,7 @@ export function applySettings() {
   if (s.theme === "system") root.removeAttribute("data-theme");
   else root.setAttribute("data-theme", s.theme);
   root.dataset.text = s.textSize;
+  void syncSystemBars(s.theme === "dark" || (s.theme === "system" && matchMedia("(prefers-color-scheme: dark)").matches));
 }
 
 const opt = (v: string, label: string, cur: string) => `<option value="${v}" ${v === cur ? "selected" : ""}>${label}</option>`;
