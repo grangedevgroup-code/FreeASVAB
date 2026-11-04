@@ -48,7 +48,34 @@ const AR: Rule[] = [
     ],
   ),
   r(
-    /\bratios?\b|for every|proportion|\d+:\d+/i,
+    /compound/i,
+    "Compound interest",
+    ["Each year, multiply the balance by (1 + rate). At 6%, multiply by 1.06.", "Do it once for every year: 2 years means × 1.06 × 1.06.", "Interest earned = final balance − starting amount."],
+    "Compound interest earns interest on earlier interest, so it is more than simple interest.",
+  ),
+  r(
+    /interest/i,
+    "Simple interest",
+    [
+      "Interest = principal × rate × time (I = P × R × T).",
+      "Write the rate as a decimal (5% = 0.05) and the time in years (18 months = 1.5).",
+      "If the question asks for the total in the account, add the interest to the principal.",
+    ],
+  ),
+  r(
+    /percent (increase|decrease|change)|what percent|by what percent/i,
+    "Percent change",
+    ["Percent change = (new − old) ÷ old × 100.", "Find the difference first, then divide by the ORIGINAL amount."],
+    "Dividing by the new amount instead of the old one is the most common mistake.",
+  ),
+  r(
+    /earns \$|salary|wage|commission|overtime|time-and-a-half/i,
+    "Pay and commission",
+    ["Regular pay = hourly rate × regular hours.", "Overtime is usually 1.5 × the hourly rate for each extra hour.", "Commission = percent × the sales it applies to; add it to any base salary."],
+    "Read carefully which hours or which sales the extra rate applies to.",
+  ),
+  r(
+    /\bratios?\b|for every|proportion|\b\d+:\d+(:\d+)?\b(?! ?[ap]\.?m)/i,
     "Ratios and proportions",
     [
       "Set up two equal fractions with matching units in the same places.",
