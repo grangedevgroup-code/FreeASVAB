@@ -103,30 +103,27 @@ const TIPS: Record<string, string> = {
 function sectionIntro(t: ActiveTest, key: string) {
   const sec = t.sections[t.section];
   const next = t.sections[t.section + 1];
+  const timed = t.timed && sec.minutes;
   page(
     null,
-    `<div class="console">
-      <header class="console-bar">
-        <button class="icon-btn" id="exit" type="button" aria-label="Save and exit">${icon("close")}</button>
-        <div class="console-title"><strong>${esc(t.title)}</strong><span>PART ${t.section + 1} OF ${t.sections.length}</span></div>
-      </header>
-      ${steps(t)}
-      <div class="screen-wrap"><div class="screen">
-        <div class="subject-head">${badge(sec.subtest, true)}<h1>${SUBTEST_NAMES[sec.subtest]}</h1></div>
-        <dl class="intro-facts">
-          <div><dt>Items</dt><dd>${sec.qids.length}</dd></div>
-          <div><dt>Time limit</dt><dd>${t.timed && sec.minutes ? `${sec.minutes} min` : "None"}</dd></div>
-        </dl>
-        <div class="notice">${icon("info")}<p>${TIPS[sec.subtest] ?? ""}</p></div>
-        ${t.strict ? `<p class="hint">Like the real computer test, you cannot go back to change an answer once you move on.</p>` : ""}
-        ${next ? `<p class="hint">Next part: ${SUBTEST_NAMES[next.subtest]}</p>` : ""}
+    `<div class="exam">
+      ${examBar(esc(t.title), `Part ${t.section + 1} of ${t.sections.length}`, false)}
+      <div class="exam-body"><div class="exam-sheet intro">
+        ${tile(sec.subtest, true)}
+        <h1>${SUBTEST_NAMES[sec.subtest]}</h1>
+        <p class="intro-meta">${sec.qids.length} questions${timed ? ` in ${sec.minutes} minutes` : ", no time limit"}</p>
+        <h2>Directions</h2>
+        <p>${TIPS[sec.subtest] ?? ""}</p>
+        ${t.strict ? `<p>Like the real computer test, you cannot go back to change an answer once you move on.</p>` : ""}
+        ${next ? `<p class="hint">After this part: ${SUBTEST_NAMES[next.subtest]}</p>` : ""}
       </div></div>
-      <footer class="console-foot">
-        <div class="console-actions">
+      <footer class="exam-foot"><div class="exam-foot-inner">
+        <div class="exam-foot-note"></div>
+        <div class="exam-actions">
           <button class="btn" id="exit2" type="button">Save and exit</button>
-          <button class="btn signal" id="go" type="button">Start part ${t.section + 1}</button>
+          <button class="btn primary" id="go" type="button">Start part ${t.section + 1}</button>
         </div>
-      </footer>
+      </div></footer>
     </div>`,
     `Part ${t.section + 1}: ${SUBTEST_NAMES[sec.subtest]}`,
     { chrome: false },
