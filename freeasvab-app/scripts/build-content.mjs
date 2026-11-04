@@ -105,8 +105,7 @@ function evalCheck(expr) {
     log10: Math.log10,
     exp: Math.exp,
   };
-  const js = expr.replace(/\*\*/g, "**");
-  return Function(...Object.keys(env), `"use strict"; return (${js});`)(...Object.values(env));
+  return Function(...Object.keys(env), `"use strict"; return (${expr});`)(...Object.values(env));
 }
 
 function numberOf(text) {
