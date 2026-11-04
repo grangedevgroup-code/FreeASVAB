@@ -85,8 +85,9 @@ export async function practiceSubject(k: string) {
     <section class="card form" aria-labelledby="quick-h">
       <h2 id="quick-h">Quick practice</h2>
       <p class="hint">Mixes questions you have not seen with ones you missed before.</p>
-      <div class="seg" role="radiogroup" aria-label="Number of questions">
-        ${[10, 20, 30].map((n, i) => `<button type="button" role="radio" aria-checked="${i === 0}" data-n="${n}" class="${i === 0 ? "on" : ""}" ${n > st.total && !gen ? "disabled" : ""}>${n} questions</button>`).join("")}
+      <p class="field-label" id="count-label">How many questions?</p>
+      <div class="seg" role="radiogroup" aria-labelledby="count-label">
+        ${[10, 20, 30].map((n, i) => `<button type="button" role="radio" aria-checked="${i === 0}" data-n="${n}" class="${i === 0 ? "on" : ""}" ${n > st.total && !gen ? "disabled" : ""}>${n}</button>`).join("")}
       </div>
       <button class="btn primary wide" id="go" type="button">Start practice</button>
       ${gen ? `<button class="btn wide" id="gen" type="button">Unlimited new ${k === "AR" ? "word problems" : "math problems"}</button>` : ""}
