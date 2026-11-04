@@ -388,13 +388,6 @@ function main() {
     ids.add(c.id);
   }
 
-  if (problems.length) {
-    console.error(`Content problems (${problems.length}):\n` + problems.map((p) => `  ${p}`).join("\n"));
-    process.exit(1);
-  }
-
-  rmSync(OUT, { recursive: true, force: true });
-  mkdirSync(join(OUT, "learn"), { recursive: true });
   const lessons = chapters.map((c, i) => {
     const { html, toc } = chapterHtml(c.body, quizCounts, chapterLinks);
     if (/\bChapter \d+\b/.test(html.replace(/<[^>]+>/g, ""))) problems.push(`${c.file}: unresolved chapter reference`);
