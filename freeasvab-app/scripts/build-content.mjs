@@ -276,10 +276,12 @@ function chapterHtml(body, quizIds, chapterLinks) {
   let t = body;
   t = t.replace(/ ?Answers and explanations are at the end of (the|this) chapter\./g, "");
   t = t.replace(/\bin this book\b/g, "in this app");
-  t = t.replace(/(^|[(.!?]\s*|\s)Chapter (\d+)/gm, (all, pre, n) => {
+  t = t.replace(/(^|[(.!?]\s*|\s)Chapter (\d+)/gm, (all, pre, n, offset, whole) => {
     const target = chapterLinks.get(n.padStart(2, "0"));
     if (!target) return all;
-    const cap = pre === "" || /[(.!?]\s*$/.test(pre);
+    const close = whole.indexOf(")", offset);
+    const parenSentence = pre.endsWith("(") && close !== -1 && /[.!?]$/.test(whole.slice(offset + all.length, close).trim());
+    const cap = pre === "" || /[.!?]\s*$/.test(pre) || parenSentence;
     return `${pre}[${cap ? "The" : "the"} ${target.title} lesson](#/learn/${target.id})`;
   });
   t = t.replace(/^::: quiz (.+?)\n[\s\S]*?^:::[ \t]*$/gm, (_, header) => {
