@@ -2,7 +2,7 @@ import { esc, loadBank, missedCount, missedIds, pick, subjectStats, unlimitedMat
 import { SUBTEST_NAMES, type Subtest } from "../scoring";
 import { accuracy, AFQT_PRACTICE, CAREER_PRACTICE } from "../stats";
 import { load } from "../store";
-import { app, badge, icon, page, plural } from "../ui";
+import { app, icon, page, plural, section, tile } from "../ui";
 import { begin, guardActive } from "./runner";
 import { startSubjectReview } from "./tests";
 
