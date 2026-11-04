@@ -161,21 +161,19 @@ export function score(raw: Raw): Scores {
 }
 
 export function afqtRange(raw: Raw): { low: number; high: number } | null {
-  const shift = (dir: 1 | -1): Raw => {
-    const out: Raw = {};
-    for (const k of Object.keys(raw) as Subtest[]) {
-      const r = raw[k];
-      if (!r || r.total <= 0) continue;
-      const p = (r.correct + 0.5) / (r.total + 1);
-      const sd = Math.sqrt(r.total * p * (1 - p));
-      out[k] = { correct: Math.min(r.total, Math.max(0, r.correct + dir * sd)), total: r.total };
-    }
-    return out;
-  };
-  const low = score(shift(-1)).afqt;
-  const high = score(shift(1)).afqt;
-  if (low === null || high === null) return null;
-  return { low, high };
+  const est = score(raw).afqt;
+  if (est === null) return null;
+  let down = 0;
+  let up = 0;
+  for (const k of AFQT_SUBTESTS) {
+    const r = raw[k]!;
+    const p = (r.correct + 0.5) / (r.total + 1);
+    const sd = Math.sqrt(r.total * p * (1 - p));
+    const moved = (dir: 1 | -1) => score({ ...raw, [k]: { correct: Math.min(r.total, Math.max(0, r.correct + dir * sd)), total: r.total } }).afqt!;
+    down += (est - moved(-1)) ** 2;
+    up += (moved(1) - est) ** 2;
+  }
+  return { low: Math.max(1, Math.round(est - Math.sqrt(down))), high: Math.min(99, Math.round(est + Math.sqrt(up))) };
 }
 
 export const AFQT_BANDS: { label: string; from: number; to: number }[] = [
