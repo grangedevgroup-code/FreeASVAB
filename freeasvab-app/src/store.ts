@@ -1,7 +1,7 @@
 import { mirrorNative } from "./native";
 import type { Raw, Scores, Subtest } from "./scoring";
 
-export type Kind = "full" | "afqt" | "practice" | "review" | "set";
+export type Kind = "full" | "afqt" | "quick" | "practice" | "review" | "set";
 
 export type Section = { subtest: Subtest | "MF"; minutes: number | null; qids: string[] };
 
@@ -12,6 +12,7 @@ export type ActiveTest = {
   strict: boolean;
   timed: boolean;
   instant: boolean;
+  allowHints?: boolean;
   sections: Section[];
   section: number;
   index: number;
@@ -44,9 +45,11 @@ export type Settings = {
   theme: "system" | "light" | "dark";
   textSize: "normal" | "large" | "larger";
   target: number;
+  goalSet: boolean;
   education: "diploma" | "ged";
   strict: boolean;
   timed: boolean;
+  hints: boolean;
 };
 
 export type State = {
@@ -55,6 +58,7 @@ export type State = {
   attempts: Attempt[];
   qstats: Record<string, QStat>;
   active: ActiveTest | null;
+  lastLesson?: string;
 };
 
 const KEY = "freeasvab:v1";
@@ -63,9 +67,11 @@ export const defaultSettings: Settings = {
   theme: "system",
   textSize: "normal",
   target: 50,
+  goalSet: false,
   education: "diploma",
   strict: true,
   timed: true,
+  hints: true,
 };
 
 function fresh(): State {
@@ -121,15 +127,19 @@ export function sanitize(input: unknown): State {
     if (t.theme === "light" || t.theme === "dark" || t.theme === "system") s.settings.theme = t.theme;
     if (t.textSize === "normal" || t.textSize === "large" || t.textSize === "larger") s.settings.textSize = t.textSize;
     if (typeof t.target === "number" && t.target >= 1 && t.target <= 99) s.settings.target = Math.round(t.target);
+    if (typeof t.goalSet === "boolean") s.settings.goalSet = t.goalSet;
     if (t.education === "diploma" || t.education === "ged") s.settings.education = t.education;
     if (typeof t.strict === "boolean") s.settings.strict = t.strict;
     if (typeof t.timed === "boolean") s.settings.timed = t.timed;
+    if (typeof t.hints === "boolean") s.settings.hints = t.hints;
   }
   if (Array.isArray(input.attempts)) {
-    s.attempts = input.attempts.filter(
-      (a): a is Attempt =>
-        isObj(a) && typeof a.id === "string" && typeof a.title === "string" && typeof a.finishedAt === "number" && Array.isArray(a.items) && isObj(a.raw),
-    );
+    s.attempts = input.attempts
+      .filter(
+        (a): a is Attempt =>
+          isObj(a) && typeof a.id === "string" && typeof a.title === "string" && typeof a.finishedAt === "number" && Array.isArray(a.items) && isObj(a.raw),
+      )
+      .map((a) => ({ ...a, timedOut: Array.isArray(a.timedOut) ? a.timedOut : [], items: a.items.filter((i) => isObj(i) && typeof i.qid === "string") }));
   }
   if (isObj(input.qstats)) {
     for (const [k, v] of Object.entries(input.qstats)) {
@@ -139,7 +149,67 @@ export function sanitize(input: unknown): State {
     }
   }
   if (isObj(input.active) && Array.isArray(input.active.sections) && isObj(input.active.answers)) s.active = input.active as ActiveTest;
+  if (typeof input.lastLesson === "string") s.lastLesson = input.lastLesson;
   return s;
+}
+
+export function applyAliases(s: State, aliases: Record<string, string>): boolean {
+  let changed = false;
+  const to = (id: string) => aliases[id] ?? id;
+  for (const [oldId, st] of Object.entries(s.qstats)) {
+    const newId = aliases[oldId];
+    if (!newId) continue;
+    const prev = s.qstats[newId];
+    s.qstats[newId] = prev
+      ? {
+          seen: prev.seen + st.seen,
+          correct: prev.correct + st.correct,
+          last: Math.max(prev.last, st.last),
+          lastCorrect: prev.last >= st.last ? prev.lastCorrect : st.lastCorrect,
+        }
+      : st;
+    delete s.qstats[oldId];
+    changed = true;
+  }
+  for (const a of s.attempts) {
+    for (const it of a.items) {
+      if (aliases[it.qid]) {
+        it.qid = aliases[it.qid];
+        changed = true;
+      }
+    }
+  }
+  const t = s.active;
+  if (t) {
+    for (const sec of t.sections) {
+      if (sec.qids.some((id) => aliases[id])) {
+        sec.qids = sec.qids.map(to);
+        changed = true;
+      }
+    }
+    const remap = <T>(rec: Record<string, T>) => {
+      const out: Record<string, T> = {};
+      for (const [k, v] of Object.entries(rec)) out[to(k)] = v;
+      return out;
+    };
+    if (Object.keys(t.answers).some((k) => aliases[k])) {
+      t.answers = remap(t.answers);
+      changed = true;
+    }
+    if (Object.keys(t.times).some((k) => aliases[k])) {
+      t.times = remap(t.times);
+      changed = true;
+    }
+    if (t.hinted?.some((k) => aliases[k])) {
+      t.hinted = t.hinted.map(to);
+      changed = true;
+    }
+  }
+  return changed;
+}
+
+export function migrateIds(aliases: Record<string, string>) {
+  if (applyAliases(load(), aliases)) save();
 }
 
 export function exportBackup(): string {
