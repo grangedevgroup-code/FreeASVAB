@@ -68,11 +68,23 @@ export async function run() {
   renderQuestion(t);
 }
 
-function steps(t: ActiveTest) {
-  const label = `Part ${t.section + 1} of ${t.sections.length}. ${t.section ? `Finished: ${t.sections.slice(0, t.section).map((s) => SUBTEST_NAMES[s.subtest]).join(", ")}.` : ""}`;
-  return `<div class="steps" role="img" aria-label="${esc(label)}">${t.sections
-    .map((_, i) => `<span class="${i < t.section ? "done" : i === t.section ? "now" : ""}"></span>`)
+function strip(t: ActiveTest) {
+  const sec = t.sections[t.section];
+  const answered = sec.qids.filter((id) => t.answers[id] !== undefined && t.answers[id] !== null).length;
+  return `<div class="strip" role="progressbar" aria-label="Questions answered in this part" aria-valuemin="0" aria-valuemax="${sec.qids.length}" aria-valuenow="${answered}">${sec.qids
+    .map((id, i) => `<span class="${i === t.index ? "now" : t.answers[id] !== undefined && t.answers[id] !== null ? "done" : ""}"></span>`)
     .join("")}</div>`;
+}
+
+function examBar(title: string, sub: string, withClock: boolean, extra = "") {
+  return `<header class="exam-bar">
+    <div class="exam-bar-inner">
+      <button class="exam-exit" id="exit" type="button" aria-label="Save and exit">${icon("close")}</button>
+      <div class="exam-title"><strong>${title}</strong><span>${sub}</span></div>
+      ${withClock ? `<div class="exam-clock" id="clock" role="timer" aria-label="Time remaining"></div>` : ""}
+    </div>
+    ${extra}
+  </header>`;
 }
 
 const TIPS: Record<string, string> = {
