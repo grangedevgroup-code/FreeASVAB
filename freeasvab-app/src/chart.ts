@@ -8,9 +8,10 @@ export function scoreScale(o: { score: number; low?: number; high?: number; goal
   const bands = AFQT_BANDS.map((b, i) => {
     const x0 = x(b.from - (i === 0 ? 0 : 0.5));
     const x1 = x(b.to + (i === AFQT_BANDS.length - 1 ? 0 : 0.5));
-    const mid = (x0 + x1) / 2;
-    return `<rect class="band b${i}" x="${(x0 + (i ? 1 : 0)).toFixed(1)}" y="26" width="${(x1 - x0 - (i ? 1 : 0) - (i < AFQT_BANDS.length - 1 ? 1 : 0)).toFixed(1)}" height="14" rx="${i === 0 || i === AFQT_BANDS.length - 1 ? 4 : 0}"><title>${b.label}: ${b.from} to ${b.to}</title></rect>
-      <text class="sc-muted" x="${mid.toFixed(1)}" y="55" text-anchor="middle">${b.label === "Below 31" ? "Below 31" : `Cat. ${b.label}`}</text>`;
+    const last = i === AFQT_BANDS.length - 1;
+    const tx = last ? x1 : (x0 + x1) / 2;
+    return `<rect class="band b${i}" x="${(x0 + (i ? 1 : 0)).toFixed(1)}" y="26" width="${(x1 - x0 - (i ? 1 : 0) - (last ? 0 : 1)).toFixed(1)}" height="14" rx="${i === 0 || last ? 4 : 0}"><title>${b.label === "Below 31" ? "Below 31" : `Category ${b.label}`}: ${b.from} to ${b.to}</title></rect>
+      <text class="sc-muted" x="${tx.toFixed(1)}" y="56" text-anchor="${last ? "end" : "middle"}">${b.label}</text>`;
   }).join("");
   const sx = x(o.score);
   const labelX = Math.min(W - 24, Math.max(24, sx));
