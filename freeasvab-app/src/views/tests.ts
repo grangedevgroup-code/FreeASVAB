@@ -53,14 +53,15 @@ export async function startScreen(kind: string) {
         ? `<div class="alert warn">${icon("warn")}<div><p><strong>You have a test in progress:</strong> ${esc(active.title)}, question ${answeredCount(active) + 1} of ${totalCount(active)}. Starting this test will discard it.</p><a class="btn small" href="#/run">Resume that test instead</a></div></div>`
         : ""
     }
-    <section class="card">
-      <div class="table-wrap"><table class="plain">
-        <thead><tr><th scope="col">Subject, in order</th><th scope="col" class="num">Questions</th><th scope="col" class="num">Time</th></tr></thead>
-        <tbody>${t.rows
-          .map((r) => `<tr><td><span class="subject-cell">${badge(r.subtest)}${SUBTEST_NAMES[r.subtest as keyof typeof SUBTEST_NAMES]}</span></td><td class="num">${r.count}</td><td class="num">${r.minutes} min</td></tr>`)
-          .join("")}</tbody>
-        <tfoot><tr><th scope="row">Total</th><td class="num">${meta.questions}</td><td class="num">${fmtMinutes(meta.minutes)}</td></tr></tfoot>
-      </table></div>
+    <section class="card" aria-labelledby="parts-h">
+      <h2 id="parts-h">The parts, in order</h2>
+      <ol class="parts">${t.rows
+        .map(
+          (r) =>
+            `<li>${badge(r.subtest)}<span class="item-body"><strong>${SUBTEST_NAMES[r.subtest as keyof typeof SUBTEST_NAMES]}</strong><small>${r.count} questions · ${r.minutes} min</small></span></li>`,
+        )
+        .join("")}</ol>
+      <p class="parts-total"><strong>Total:</strong> ${meta.questions} questions · ${k === "quick" ? "about 15 min" : `up to ${fmtMinutes(meta.minutes)}`}</p>
     </section>
     <section class="card form" aria-label="Test options">
       <h2>Options</h2>
