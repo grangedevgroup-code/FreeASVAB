@@ -264,7 +264,7 @@
 - spoiled
 > **Scarce** means in short supply.
 
-? The rumor proved to be *false*; the report was *accurate*. *Accurate* means:
+? The map gave an *accurate* location of the camp.
 - correct *
 - early
 - partial
