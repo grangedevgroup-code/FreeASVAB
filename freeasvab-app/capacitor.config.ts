@@ -4,6 +4,13 @@ const config: CapacitorConfig = {
   appId: "io.github.freeasvab",
   appName: "FreeASVAB",
   webDir: "dist",
+  backgroundColor: "#162e51",
+  plugins: {
+    SystemBars: {
+      insetsHandling: "css",
+      style: "DARK",
+    },
+  },
 };
 
 export default config;
