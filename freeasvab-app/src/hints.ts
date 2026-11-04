@@ -48,16 +48,44 @@ const AR: Rule[] = [
     ],
   ),
   r(
-    /nickel|dime|quarter|coins|mixture|\bmix\b|mixed|blend|peanuts|cashews/i,
+    /\bratios?\b|for every|proportion|\d+:\d+/i,
+    "Ratios and proportions",
+    [
+      "Set up two equal fractions with matching units in the same places.",
+      "Cross-multiply and solve.",
+      "To split a total in the ratio a:b, divide the total by (a + b) to get one part, then multiply.",
+    ],
+    "Keep the order of the ratio the same on both sides.",
+  ),
+  r(
+    /nickel|dime|quarter|coins|mixture|\bmix\b|mixed|blend|peanuts|cashews|solution|dilute/i,
     "Two-unknown problems (coins and mixtures)",
     [
       "Let one amount be x and the other be (total − x).",
-      "Write a value equation: (value of each) × (how many) for both kinds, added together, equals the total value.",
+      "Write a value equation: (value or strength of each) × (how much of it), added together, equals the total.",
       "Solve for x and check your answer against both facts in the question.",
     ],
     "Work in cents for coin problems to avoid decimal mistakes.",
   ),
+  r(
+    /average (speed|rate)/i,
+    "Average speed",
+    ["Average speed = TOTAL distance ÷ TOTAL time.", "Add up every leg of the trip first, including the return.", "Change minutes to hours before dividing (15 minutes = 0.25 hour)."],
+    "Average speed is not the average of the two speeds when the times are different.",
+  ),
   AVERAGE,
+  r(
+    /compound/i,
+    "Compound interest",
+    ["Each year, multiply the balance by (1 + rate). At 6%, multiply by 1.06.", "Do it once for every year: 2 years means × 1.06 × 1.06.", "Interest earned = final balance − starting amount."],
+    "Compound interest earns interest on earlier interest, so it is more than simple interest.",
+  ),
+  r(
+    /earns|salary|wage|commission|overtime|time-and-a-half/i,
+    "Pay and commission",
+    ["Regular pay = hourly rate × regular hours.", "Overtime is usually 1.5 × the hourly rate for each extra hour.", "Commission = percent × the sales it applies to; add it to any base salary."],
+    "Read carefully which hours or which sales the extra rate applies to.",
+  ),
   r(
     /simple interest|interest/i,
     "Simple interest",
