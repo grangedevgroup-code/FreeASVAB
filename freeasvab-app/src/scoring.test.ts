@@ -62,6 +62,32 @@ describe("score", () => {
   });
 });
 
+describe("afqtRange", () => {
+  const afqtOnly = (correct: number, total: number) => ({
+    AR: { correct, total },
+    WK: { correct, total },
+    PC: { correct, total },
+    MK: { correct, total },
+  });
+  it("brackets the estimate", () => {
+    for (let c = 2; c <= 14; c++) {
+      const raw = afqtOnly(c, 15);
+      const est = score(raw).afqt!;
+      const r = afqtRange(raw)!;
+      expect(r.low).toBeLessThanOrEqual(est);
+      expect(r.high).toBeGreaterThanOrEqual(est);
+    }
+  });
+  it("narrows as the test gets longer", () => {
+    const short = afqtRange(afqtOnly(3, 5))!;
+    const long = afqtRange(afqtOnly(30, 50))!;
+    expect(long.high - long.low).toBeLessThan(short.high - short.low);
+  });
+  it("needs every AFQT subject", () => {
+    expect(afqtRange({ AR: { correct: 5, total: 10 } })).toBeNull();
+  });
+});
+
 describe("afqtCategory", () => {
   it("matches the official bands", () => {
     expect([99, 93, 92, 65, 64, 50, 49, 31, 30, 21, 20, 16, 15, 10, 9, 1].map(afqtCategory)).toEqual([
