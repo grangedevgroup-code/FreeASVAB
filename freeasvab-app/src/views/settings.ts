@@ -18,37 +18,51 @@ export function settings() {
   const s = load().settings;
   page(
     "settings",
-    `<h1>Settings</h1>
-    <section class="card form" aria-labelledby="goal-h">
-      <h2 id="goal-h">Your goal</h2>
-      <div class="presets compact" role="radiogroup" aria-label="Goal presets">${GOAL_PRESETS.map(
-        (g) => `<button type="button" class="preset ${s.target === g.v ? "on" : ""}" role="radio" aria-checked="${s.target === g.v}" data-goal="${g.v}"><strong>${g.v}</strong><span>${g.label}</span></button>`,
-      ).join("")}</div>
-      <label>Or type any AFQT goal from 1 to 99 <input type="number" id="target" min="1" max="99" value="${s.target}" inputmode="numeric"></label>
-      <label>Education <select id="education">${opt("diploma", "High school diploma", s.education)}${opt("ged", "GED or other credential", s.education)}</select></label>
-      <p class="hint">Education changes which enlistment minimums your results are compared with.</p>
+    `<div class="page-head"><h1>Settings</h1></div>
+    <section class="panel form" aria-labelledby="goal-h">
+      <header class="panel-head"><h2 id="goal-h">Target score</h2><span class="meta">AFQT 1 to 99</span></header>
+      <div class="panel-body">
+        <div class="presets" role="radiogroup" aria-label="Goal presets">${GOAL_PRESETS.map(
+          (g) => `<button type="button" class="preset ${s.target === g.v ? "on" : ""}" role="radio" aria-checked="${s.target === g.v}" data-goal="${g.v}"><strong>${g.v}</strong><span>${g.label}</span></button>`,
+        ).join("")}</div>
+        <label>Or type any AFQT goal from 1 to 99 <input type="number" id="target" min="1" max="99" value="${s.target}" inputmode="numeric"></label>
+        <label>Education <select id="education">${opt("diploma", "High school diploma", s.education)}${opt("ged", "GED or other credential", s.education)}</select></label>
+        <p class="hint">Education changes which enlistment minimums your results are compared with.</p>
+      </div>
     </section>
-    <section class="card form" aria-labelledby="test-h">
-      <h2 id="test-h">Practice test defaults</h2>
-      <label class="switch"><input type="checkbox" id="timed" ${s.timed ? "checked" : ""}><span><strong>Use time limits</strong><small>The same limits as the computer ASVAB</small></span></label>
-      <label class="switch"><input type="checkbox" id="strict" ${s.strict ? "checked" : ""}><span><strong>No going back</strong><small>Answers are final once you move on</small></span></label>
-      <label class="switch"><input type="checkbox" id="hints" ${s.hints ? "checked" : ""}><span><strong>Show "How to solve this"</strong><small>Available on every question during tests</small></span></label>
+    <section class="panel form" aria-labelledby="test-h">
+      <header class="panel-head"><h2 id="test-h">Practice test defaults</h2></header>
+      <div class="panel-body">
+        <label class="switch"><input type="checkbox" id="timed" ${s.timed ? "checked" : ""}><span><strong>Use time limits</strong><small>The same limits as the computer ASVAB</small></span></label>
+        <label class="switch"><input type="checkbox" id="strict" ${s.strict ? "checked" : ""}><span><strong>No going back</strong><small>Answers are final once you move on</small></span></label>
+        <label class="switch"><input type="checkbox" id="hints" ${s.hints ? "checked" : ""}><span><strong>Show "How to solve this"</strong><small>Available on every question during tests</small></span></label>
+      </div>
     </section>
-    <section class="card form" aria-labelledby="disp-h">
-      <h2 id="disp-h">Display</h2>
-      <label>Theme <select id="theme">${opt("system", "Match my device", s.theme)}${opt("light", "Light", s.theme)}${opt("dark", "Dark", s.theme)}</select></label>
-      <label>Text size <select id="textSize">${opt("normal", "Normal", s.textSize)}${opt("large", "Large", s.textSize)}${opt("larger", "Larger", s.textSize)}</select></label>
+    <section class="panel form" aria-labelledby="disp-h">
+      <header class="panel-head"><h2 id="disp-h">Display</h2></header>
+      <div class="panel-body">
+        <label>Theme <select id="theme">${opt("system", "Match my device", s.theme)}${opt("light", "Light", s.theme)}${opt("dark", "Dark", s.theme)}</select></label>
+        <label>Text size <select id="textSize">${opt("normal", "Normal", s.textSize)}${opt("large", "Large", s.textSize)}${opt("larger", "Larger", s.textSize)}</select></label>
+      </div>
     </section>
-    <section class="card form" aria-labelledby="data-h">
-      <h2 id="data-h">Your data</h2>
-      <p class="hint">Your results are saved only on this device. Nothing is sent anywhere. Save a backup file to keep your progress safe or move it to another device.</p>
-      <button class="btn" id="export" type="button">Save a backup file</button>
-      <label class="btn file">Restore from a backup file<input type="file" id="import" accept="application/json,.json"></label>
-      <button class="btn danger" id="reset" type="button">Erase all my results</button>
+    <section class="panel form" aria-labelledby="data-h">
+      <header class="panel-head"><h2 id="data-h">Your data</h2><span class="meta">This device only</span></header>
+      <div class="panel-body">
+        <p class="hint">Your results are saved only on this device. Nothing is sent anywhere. Save a backup file to keep your progress safe or move it to another device.</p>
+        <div class="actions">
+          <button class="btn" id="export" type="button">Save a backup file</button>
+          <label class="btn file">Restore from a backup<input type="file" id="import" accept="application/json,.json"></label>
+          <button class="btn danger" id="reset" type="button">Erase all my results</button>
+        </div>
+      </div>
     </section>
-    <a class="item" href="#/about">${icon("info")}<span class="item-body"><strong>About FreeASVAB</strong><small>How scores are estimated, version ${__APP_VERSION__}</small></span>${icon("next", "chev")}</a>
+    <section class="panel" aria-labelledby="about-h">
+      <header class="panel-head"><h2 id="about-h">About</h2><span class="meta">Version ${__APP_VERSION__}</span></header>
+      <div class="rows"><a class="row" href="#/about">${icon("info")}<span class="row-main"><strong>About FreeASVAB</strong><small>How scores are estimated, and where the questions come from</small></span>${icon("next", "chev")}</a></div>
+    </section>
     ${siteFooter()}`,
     "Settings",
+    { narrow: true },
   );
   const bind = (id: string, fn: (el: HTMLInputElement) => void) =>
     document.getElementById(id)!.addEventListener("change", (e) => {
