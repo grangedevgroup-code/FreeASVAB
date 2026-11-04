@@ -164,12 +164,12 @@ export function resumeClock() {
 }
 
 export function runnerVisible() {
-  return !!document.querySelector(".console .screen .choices");
+  return !!document.querySelector(".exam .choices");
 }
 
 export function howTo(subtest: string, text: string, open: boolean) {
   const h = hintFor(subtest, text);
-  return `<details class="howto" ${open ? "open" : ""}><summary>How to solve this</summary>
+  return `<details class="howto" ${open ? "open" : ""}><summary>${icon("bulb")}How to solve this</summary>
     <div class="howto-body"><p class="howto-title">${esc(h.title)}</p><ol>${h.steps.map((x) => `<li>${esc(x)}</li>`).join("")}</ol>${
       h.trap ? `<p class="trap"><strong>Watch out:</strong> ${esc(h.trap)}</p>` : ""
     }</div></details>`;
