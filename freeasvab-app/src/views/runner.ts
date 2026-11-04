@@ -2,7 +2,7 @@ import { esc, loadBank, passage, question } from "../bank";
 import { hintFor } from "../hints";
 import { SUBTEST_NAMES, score, type Raw, type Subtest } from "../scoring";
 import { askPersistence, load, uid, update, type ActiveTest, type Attempt, type Kind, type Section } from "../store";
-import { app, ask, badge, fmtClock, icon, notice, onLeave, page } from "../ui";
+import { app, ask, fmtClock, icon, notice, onLeave, page, tile } from "../ui";
 
 const LETTERS = "ABCD";
 let introSeen = "";
