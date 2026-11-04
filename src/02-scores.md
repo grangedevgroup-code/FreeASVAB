@@ -1,4 +1,4 @@
-# Your Scores: AFQT, Line Scores, and What 70–80 Means {data-sub="How the scoring works, what every branch requires, and how retesting works"}
+# Your Scores: AFQT, Line Scores, and What They Mean {data-sub="How the scoring works, what every branch requires, and how retesting works"}
 
 You will get three kinds of scores from the ASVAB. Once you understand them, you will know exactly where your study time pays off the most.
 
