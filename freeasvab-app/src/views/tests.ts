@@ -55,11 +55,11 @@ export async function startScreen(kind: string) {
     }
     <section class="card">
       <div class="table-wrap"><table class="plain">
-        <thead><tr><th scope="col">Part</th><th scope="col">Subject</th><th scope="col" class="num">Questions</th><th scope="col" class="num">Time</th></tr></thead>
+        <thead><tr><th scope="col">Subject, in order</th><th scope="col" class="num">Questions</th><th scope="col" class="num">Time</th></tr></thead>
         <tbody>${t.rows
-          .map((r, i) => `<tr><td>${i + 1}</td><td><span class="subject-cell">${badge(r.subtest)}${SUBTEST_NAMES[r.subtest as keyof typeof SUBTEST_NAMES]}</span></td><td class="num">${r.count}</td><td class="num">${r.minutes} min</td></tr>`)
+          .map((r) => `<tr><td><span class="subject-cell">${badge(r.subtest)}${SUBTEST_NAMES[r.subtest as keyof typeof SUBTEST_NAMES]}</span></td><td class="num">${r.count}</td><td class="num">${r.minutes} min</td></tr>`)
           .join("")}</tbody>
-        <tfoot><tr><th scope="row" colspan="2">Total</th><td class="num">${meta.questions}</td><td class="num">${fmtMinutes(meta.minutes)}</td></tr></tfoot>
+        <tfoot><tr><th scope="row">Total</th><td class="num">${meta.questions}</td><td class="num">${fmtMinutes(meta.minutes)}</td></tr></tfoot>
       </table></div>
     </section>
     <section class="card form" aria-label="Test options">
