@@ -168,6 +168,11 @@ const AR: Rule[] = [
     ["Volume of a box = length × width × height.", "Convert units if needed (for example, how many gallons one cubic foot holds), then multiply."],
   ),
   r(
+    /fence|fencing|edging|perimeter|go around it|trim around/i,
+    "Perimeter (distance around)",
+    ["Perimeter of a rectangle = 2 × length + 2 × width.", "Change every side to the unit the answer wants first: 1 yard = 3 feet."],
+  ),
+  r(
     /square (feet|foot|yards?|meters?|inches)|carpet|\btile|area|by \d+ feet/i,
     "Area and unit conversion",
     ["Area of a rectangle = length × width.", "1 square yard = 9 square feet (3 ft × 3 ft).", "Find the area in the units the price uses, then multiply by the price."],
