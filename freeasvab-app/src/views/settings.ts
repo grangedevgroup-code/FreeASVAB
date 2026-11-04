@@ -1,4 +1,4 @@
-import { isNative, shareBackup } from "../native";
+import { isNative, shareBackup, syncSystemBars } from "../native";
 import { exportBackup, importBackup, load, resetAll, update } from "../store";
 import { app, ask, icon, notice, page } from "../ui";
 import { GOAL_PRESETS, siteFooter } from "./home";

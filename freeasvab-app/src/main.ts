@@ -57,6 +57,7 @@ matchMedia("(prefers-color-scheme: dark)").addEventListener("change", applySetti
 void restoreNative().then(() => {
   applySettings();
   void route();
+  window.setTimeout(applySettings, 1500);
 });
 
 if ("serviceWorker" in navigator && import.meta.env.PROD && !isNative) {

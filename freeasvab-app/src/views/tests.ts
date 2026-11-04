@@ -50,7 +50,7 @@ export async function startScreen(kind: string) {
     <p class="lead">${t.blurb}</p>
     ${
       active
-        ? `<div class="alert warn">${icon("warn")}<div><p><strong>You have a test in progress:</strong> ${esc(active.title)}, question ${answeredCount(active) + 1} of ${totalCount(active)}. Starting this test will discard it.</p><a class="btn small" href="#/run">Resume that test instead</a></div></div>`
+        ? `<div class="alert warn">${icon("warn")}<div><p><strong>You have a test in progress:</strong> ${esc(active.title)}, question ${answeredCount(active) + 1} of ${totalCount(active)}. Starting this test will discard it.</p><a class="btn" href="#/run">Resume that test instead</a></div></div>`
         : ""
     }
     <section class="card" aria-labelledby="parts-h">

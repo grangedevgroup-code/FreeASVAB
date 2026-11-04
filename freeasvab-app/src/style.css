@@ -141,6 +141,18 @@ html {
   text-size-adjust: 100%;
 }
 
+body::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 90;
+  height: var(--sat);
+  background: var(--navy);
+  pointer-events: none;
+}
+
 body {
   margin: 0;
   background: var(--bg);
@@ -1987,4 +1999,24 @@ figcaption {
   font-size: 0.78rem;
   letter-spacing: 0.04em;
   text-transform: uppercase;
+}
+
+.parts {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.parts li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--line);
+}
+.parts small {
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+.parts-total {
+  margin: 12px 0 0;
 }
