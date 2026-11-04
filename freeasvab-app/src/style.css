@@ -573,6 +573,9 @@ details > summary::-webkit-details-marker {
 .rows {
   display: flex;
   flex-direction: column;
+  margin: 0;
+  padding: 0;
+  list-style: none;
 }
 .row {
   display: flex;
@@ -2008,6 +2011,18 @@ figcaption {
 }
 .site-foot .fine {
   font-size: 0.78rem;
+}
+
+@media (max-width: 559px) {
+  .panel-head {
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 2px;
+  }
+  .panel-head .meta {
+    text-align: left;
+  }
 }
 
 @media (min-width: 560px) {

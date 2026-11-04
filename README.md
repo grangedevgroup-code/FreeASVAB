@@ -40,7 +40,7 @@ npm run build    # static site in dist/
 
 The same build can be wrapped as an Android or iOS app with Capacitor: run `npm run cap:sync`, then open the `android` or `ios` project in Android Studio or Xcode. The app icon and splash images come from `freeasvab-app/assets`; after changing them, run `npx @capacitor/assets generate --android --ios` to rebuild the native icon sets.
 
-The look follows the U.S. Web Design System's colors and its Public Sans typeface, both free for anyone to use. FreeASVAB is not a government site and does not use government seals or the official-website banner.
+The look is an original testing-station style: olive drab and khaki with one signal-amber accent, Saira Condensed and Saira Stencil One for headings and scores, and IBM Plex Sans and Mono for text and readouts, all under the SIL Open Font License and bundled for offline use. FreeASVAB is not a government site and uses no seals, branch insignia or official-website banner.
 
 ## License and disclaimer
 

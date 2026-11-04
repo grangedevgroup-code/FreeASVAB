@@ -25,7 +25,7 @@ export function progress(showAll = false) {
     "progress",
     `<div class="page-head"><h1>Progress</h1></div>
     <section class="panel" aria-labelledby="sum-h">
-      <header class="panel-head"><h2 id="sum-h">Service record</h2><span class="meta">Stored on this device</span></header>
+      <header class="panel-head"><h2 id="sum-h">Summary</h2><span class="meta">Stored on this device</span></header>
       <dl class="kv">
         <div><dt>Practice tests</dt><dd>${sum.tests}</dd></div>
         <div><dt>Questions answered</dt><dd>${sum.answered.toLocaleString()}</dd></div>

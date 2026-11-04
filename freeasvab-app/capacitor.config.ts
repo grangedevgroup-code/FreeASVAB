@@ -4,7 +4,7 @@ const config: CapacitorConfig = {
   appId: "io.github.freeasvab",
   appName: "FreeASVAB",
   webDir: "dist",
-  backgroundColor: "#162e51",
+  backgroundColor: "#262d1b",
   plugins: {
     SystemBars: {
       insetsHandling: "css",

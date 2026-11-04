@@ -59,7 +59,7 @@ function header(tab: Tab | null) {
   ).join("");
   return `<header class="appbar">
     <div class="appbar-inner">
-      <a class="brand" href="#/"><img src="icons/icon-192.png" alt="" width="32" height="32"><span>FreeASVAB</span></a>
+      <a class="brand" href="#/" aria-label="FreeASVAB home"><img src="icons/icon-192.png" alt="" width="30" height="30"><span class="brand-mark" aria-hidden="true">FREE<b>ASVAB</b></span></a>
       <nav class="topnav" aria-label="Main">${links}</nav>
     </div>
   </header>`;
@@ -72,11 +72,16 @@ function tabs(tab: Tab | null) {
   ).join("")}</nav>`;
 }
 
-export function page(tab: Tab | null, body: string, title: string, opts: { chrome?: boolean; keepScroll?: boolean } = {}) {
+let lastTitle = "";
+
+export function page(tab: Tab | null, body: string, title: string, opts: { chrome?: boolean; keepScroll?: boolean; narrow?: boolean } = {}) {
   runLeave();
   const chrome = opts.chrome ?? true;
+  const enter = chrome && title !== lastTitle;
+  lastTitle = title;
   document.title = title ? `${title} · FreeASVAB` : "FreeASVAB: Free ASVAB Practice Tests";
-  app.innerHTML = `${chrome ? header(tab) : ""}<main class="page${chrome ? "" : " bare"}" id="main" tabindex="-1">${body}</main>${chrome ? tabs(tab) : ""}`;
+  const cls = ["page", chrome ? "" : "bare", opts.narrow ? "narrow" : "", enter ? "enter" : ""].filter(Boolean).join(" ");
+  app.innerHTML = `${chrome ? header(tab) : ""}<main class="${cls}" id="main" tabindex="-1">${body}</main>${chrome ? tabs(tab) : ""}`;
   if (!opts.keepScroll) window.scrollTo(0, 0);
   const h = app.querySelector<HTMLElement>("main h1");
   if (h) {
@@ -140,8 +145,12 @@ export function toast(message: string, action?: { label: string; run: () => void
 
 const AFQT_CODES = new Set(["WK", "PC", "AR", "MK", "MF"]);
 
-export function badge(code: string) {
-  return `<span class="badge ${AFQT_CODES.has(code) ? "b-afqt" : "b-career"}" aria-hidden="true">${code === "MF" ? "MB" : esc(code)}</span>`;
+export function badge(code: string, large = false) {
+  return `<span class="code${AFQT_CODES.has(code) ? "" : " career"}${large ? " lg" : ""}" aria-hidden="true">${code === "MF" ? "MB" : esc(code)}</span>`;
+}
+
+export function chip(text: string) {
+  return `<span class="code plain" aria-hidden="true">${text}</span>`;
 }
 
 export function fmtDate(t: number) {
@@ -167,7 +176,7 @@ export function plural(n: number, word: string, many = `${word}s`) {
 export function errorPage(retry: () => void) {
   page(
     null,
-    `<div class="alert error" role="alert">${icon("warn")}<div><h1>Questions could not be loaded</h1>
+    `<div class="notice error" role="alert">${icon("warn")}<div><h1>Questions could not be loaded</h1>
       <p>FreeASVAB needs to download its questions once. Check your internet connection and try again. After that it works offline.</p>
       <button class="btn primary" id="retry" type="button">Try again</button></div></div>`,
     "Could not load",

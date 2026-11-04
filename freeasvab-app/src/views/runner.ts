@@ -2,7 +2,7 @@ import { esc, loadBank, passage, question } from "../bank";
 import { hintFor } from "../hints";
 import { SUBTEST_NAMES, score, type Raw, type Subtest } from "../scoring";
 import { askPersistence, load, uid, update, type ActiveTest, type Attempt, type Kind, type Section } from "../store";
-import { app, ask, fmtClock, icon, notice, onLeave, page, plural } from "../ui";
+import { app, ask, badge, fmtClock, icon, notice, onLeave, page } from "../ui";
 
 const LETTERS = "ABCD";
 let introSeen = "";
@@ -100,7 +100,6 @@ function sectionIntro(t: ActiveTest, key: string) {
       </header>
       ${steps(t)}
       <div class="screen-wrap"><div class="screen">
-        <p class="eyebrow">Part ${t.section + 1} of ${t.sections.length}</p>
         <div class="subject-head">${badge(sec.subtest, true)}<h1>${SUBTEST_NAMES[sec.subtest]}</h1></div>
         <dl class="intro-facts">
           <div><dt>Items</dt><dd>${sec.qids.length}</dd></div>
