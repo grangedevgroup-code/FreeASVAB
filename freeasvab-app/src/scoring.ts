@@ -160,6 +160,32 @@ export function score(raw: Raw): Scores {
   return { standard, afqt, category: afqt === null ? null : afqtCategory(afqt), army, mage };
 }
 
+export function afqtRange(raw: Raw): { low: number; high: number } | null {
+  const shift = (dir: 1 | -1): Raw => {
+    const out: Raw = {};
+    for (const k of Object.keys(raw) as Subtest[]) {
+      const r = raw[k];
+      if (!r || r.total <= 0) continue;
+      const p = (r.correct + 0.5) / (r.total + 1);
+      const sd = Math.sqrt(r.total * p * (1 - p));
+      out[k] = { correct: Math.min(r.total, Math.max(0, r.correct + dir * sd)), total: r.total };
+    }
+    return out;
+  };
+  const low = score(shift(-1)).afqt;
+  const high = score(shift(1)).afqt;
+  if (low === null || high === null) return null;
+  return { low, high };
+}
+
+export const AFQT_BANDS: { label: string; from: number; to: number }[] = [
+  { label: "Below 31", from: 1, to: 30 },
+  { label: "IIIB", from: 31, to: 49 },
+  { label: "IIIA", from: 50, to: 64 },
+  { label: "II", from: 65, to: 92 },
+  { label: "I", from: 93, to: 99 },
+];
+
 export const BRANCH_MINIMUMS: { branch: string; diploma: number; ged: number; note?: string }[] = [
   { branch: "Army", diploma: 31, ged: 50 },
   { branch: "Navy", diploma: 31, ged: 50 },
