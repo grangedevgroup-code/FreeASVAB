@@ -102,27 +102,6 @@ const AR: Rule[] = [
   ),
   AVERAGE,
   r(
-    /compound/i,
-    "Compound interest",
-    ["Each year, multiply the balance by (1 + rate). At 6%, multiply by 1.06.", "Do it once for every year: 2 years means × 1.06 × 1.06.", "Interest earned = final balance − starting amount."],
-    "Compound interest earns interest on earlier interest, so it is more than simple interest.",
-  ),
-  r(
-    /earns|salary|wage|commission|overtime|time-and-a-half/i,
-    "Pay and commission",
-    ["Regular pay = hourly rate × regular hours.", "Overtime is usually 1.5 × the hourly rate for each extra hour.", "Commission = percent × the sales it applies to; add it to any base salary."],
-    "Read carefully which hours or which sales the extra rate applies to.",
-  ),
-  r(
-    /simple interest|interest/i,
-    "Simple interest",
-    [
-      "Interest = principal × rate × time (I = P × R × T).",
-      "Write the rate as a decimal (5% = 0.05) and the time in years (6 months = 0.5).",
-      "If the question asks for the total in the account, add the interest to the principal.",
-    ],
-  ),
-  r(
     /% off|percent off|discount|on sale|sale price|sales tax|\btax\b|\btip\b|marked down/i,
     "Discounts and tax",
     [
