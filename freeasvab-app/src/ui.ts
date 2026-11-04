@@ -70,7 +70,7 @@ function header(tab: Tab | null) {
   ).join("");
   return `<header class="appbar">
     <div class="appbar-inner">
-      <a class="brand" href="#/" aria-label="FreeASVAB home"><img src="icons/icon-192.png" alt="" width="30" height="30"><span class="brand-mark" aria-hidden="true">FREE<b>ASVAB</b></span></a>
+      <a class="brand" href="#/" aria-label="FreeASVAB home"><img src="icons/icon-192.png" alt="" width="28" height="28"><span class="brand-mark" aria-hidden="true"><span>FREE</span>ASVAB</span></a>
       <nav class="topnav" aria-label="Main">${links}</nav>
     </div>
   </header>`;
