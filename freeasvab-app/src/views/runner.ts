@@ -124,7 +124,7 @@ function sectionIntro(t: ActiveTest, key: string) {
     introSeen = key;
     renderQuestion(load().active!);
   });
-  document.getElementById("exit")!.addEventListener("click", () => (location.hash = "#/"));
+  for (const id of ["exit", "exit2"]) document.getElementById(id)!.addEventListener("click", () => (location.hash = "#/"));
 }
 
 function remainingMs(t: ActiveTest) {
