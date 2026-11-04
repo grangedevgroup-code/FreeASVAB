@@ -229,8 +229,8 @@ details.passage[open] summary::after,
 
 .skip {
   position: absolute;
-  left: -9999px;
   top: calc(var(--sat) + 8px);
+  left: 8px;
   z-index: 100;
   padding: 10px 14px;
   border: 2px solid var(--accent);
@@ -238,9 +238,16 @@ details.passage[open] summary::after,
   color: var(--accent);
   font: inherit;
   font-weight: 700;
+  clip-path: inset(50%);
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  white-space: nowrap;
 }
 .skip:focus {
-  left: 8px;
+  clip-path: none;
+  width: auto;
+  height: auto;
 }
 
 .ic {
