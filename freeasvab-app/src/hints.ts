@@ -431,14 +431,18 @@ const FALLBACK: Record<string, Hint> = {
 const RULES: Record<string, Rule[]> = { AR, MF: [...AR, ...MK], MK, EI, MC, PC, GS, AI, SI };
 
 export function plainText(html: string) {
-  return html
-    .replace(/<sup>/g, "^")
-    .replace(/<[^>]+>/g, " ")
+  let text = html.replace(/<sup>/g, "^");
+  let prev;
+  do {
+    prev = text;
+    text = text.replace(/<[^<>]*>/g, " ");
+  } while (text !== prev);
+  return text
     .replace(/&lt;/g, "<")
     .replace(/&gt;/g, ">")
-    .replace(/&amp;/g, "&")
     .replace(/&#39;/g, "'")
     .replace(/&quot;/g, '"')
+    .replace(/&amp;/g, "&")
     .replace(/\s+/g, " ")
     .trim();
 }
