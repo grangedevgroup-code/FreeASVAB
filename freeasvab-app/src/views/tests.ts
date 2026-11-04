@@ -46,36 +46,42 @@ export async function startScreen(kind: string) {
   page(
     "home",
     `<a class="back" href="#/">${icon("back")}Home</a>
-    <h1>${t.title}</h1>
-    <p class="lead">${t.blurb}</p>
+    <div class="page-head"><h1>${t.title}</h1><p class="lead">${t.blurb}</p></div>
     ${
       active
-        ? `<div class="alert warn">${icon("warn")}<div><p><strong>You have a test in progress:</strong> ${esc(active.title)}, question ${answeredCount(active) + 1} of ${totalCount(active)}. Starting this test will discard it.</p><a class="btn" href="#/run">Resume that test instead</a></div></div>`
+        ? `<div class="notice warn">${icon("warn")}<div><p><strong>You have a test in progress:</strong> ${esc(active.title)}, item ${answeredCount(active) + 1} of ${totalCount(active)}. Starting this test will discard it.</p><a class="btn" href="#/run">Resume that test instead</a></div></div>`
         : ""
     }
-    <section class="card" aria-labelledby="parts-h">
-      <h2 id="parts-h">The parts, in order</h2>
-      <ol class="parts">${t.rows
+    <section class="panel" aria-labelledby="parts-h">
+      <header class="panel-head"><h2 id="parts-h">Test outline</h2><span class="meta">${meta.questions} items, ${k === "quick" ? "about 15 min" : `up to ${fmtMinutes(meta.minutes)}`}</span></header>
+      <ol class="rows" aria-label="Subtests in order">${t.rows
         .map(
-          (r) =>
-            `<li>${badge(r.subtest)}<span class="item-body"><strong>${SUBTEST_NAMES[r.subtest as keyof typeof SUBTEST_NAMES]}</strong><small>${r.count} questions · ${r.minutes} min</small></span></li>`,
+          (r, i) =>
+            `<li class="row">${badge(r.subtest)}<span class="row-main"><strong>${SUBTEST_NAMES[r.subtest as keyof typeof SUBTEST_NAMES]}</strong><small>Part ${i + 1} of ${t.rows.length}</small></span><span class="row-data"><b>${r.count} items</b>${r.minutes} min</span></li>`,
         )
         .join("")}</ol>
-      <p class="parts-total"><strong>Total:</strong> ${meta.questions} questions · ${k === "quick" ? "about 15 min" : `up to ${fmtMinutes(meta.minutes)}`}</p>
     </section>
-    <section class="card form" aria-label="Test options">
-      <h2>Options</h2>
-      <label class="switch"><input type="checkbox" id="timed" ${timedDefault ? "checked" : ""}><span><strong>Use time limits</strong><small>${k === "quick" ? "Off by default for the quick check" : "The same limits as the computer ASVAB"}</small></span></label>
-      <label class="switch"><input type="checkbox" id="strict" ${s.settings.strict ? "checked" : ""}><span><strong>No going back</strong><small>Like the real test, answers are final once you move on</small></span></label>
-      <label class="switch"><input type="checkbox" id="hints" ${s.settings.hints ? "checked" : ""}><span><strong>Show "How to solve this"</strong><small>A tap-to-open method for each question. Turn off for a test-day run.</small></span></label>
+    <section class="panel form" aria-labelledby="opt-h">
+      <header class="panel-head"><h2 id="opt-h">Options</h2></header>
+      <div class="panel-body">
+        <label class="switch"><input type="checkbox" id="timed" ${timedDefault ? "checked" : ""}><span><strong>Use time limits</strong><small>${k === "quick" ? "Off by default for the quick check" : "The same limits as the computer ASVAB"}</small></span></label>
+        <label class="switch"><input type="checkbox" id="strict" ${s.settings.strict ? "checked" : ""}><span><strong>No going back</strong><small>Like the real test, answers are final once you move on</small></span></label>
+        <label class="switch"><input type="checkbox" id="hints" ${s.settings.hints ? "checked" : ""}><span><strong>Show "How to solve this"</strong><small>A tap-to-open method for each question. Turn it off for a test-day run.</small></span></label>
+      </div>
     </section>
-    <ol class="process">
-      <li><strong>Get ready.</strong> Scratch paper and a pencil. No calculator: the real test does not allow one.</li>
-      <li><strong>Answer every question.</strong> A blank always counts as wrong, so guess if you have to.</li>
-      <li><strong>Take a break if you need one.</strong> You can stop at any time and pick up where you left off. The clock pauses while you are away.</li>
-    </ol>
-    <button class="btn primary wide" id="go" type="button">Start ${t.title.toLowerCase()}</button>`,
+    <section class="panel" aria-labelledby="ready-h">
+      <header class="panel-head"><h2 id="ready-h">Before you begin</h2></header>
+      <div class="panel-body">
+        <ol class="process">
+          <li><strong>Get ready.</strong> Scratch paper and a pencil. No calculator: the real test does not allow one.</li>
+          <li><strong>Answer every question.</strong> A blank always counts as wrong, so guess if you have to.</li>
+          <li><strong>Take a break if you need one.</strong> You can stop at any time and pick up where you left off. The clock pauses while you are away.</li>
+        </ol>
+      </div>
+    </section>
+    <button class="btn signal big wide" id="go" type="button">Begin ${t.title.toLowerCase()}</button>`,
     t.title,
+    { narrow: true },
   );
   document.getElementById("go")!.addEventListener("click", async () => {
     const timed = (document.getElementById("timed") as HTMLInputElement).checked;
