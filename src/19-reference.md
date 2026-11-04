@@ -225,4 +225,4 @@
 
 ## A Final Word
 
-You now have everything you need: how the test works, how it is scored, the strategies that protect your points, and every subject explained from the ground up — plus hundreds of practice questions. A 70 to 80 AFQT is well within reach for anyone who studies a little every day and learns from every mistake. Keep going, trust your preparation, and walk into that testing room ready.
+You now have everything you need: how the test works, how it is scored, the strategies that protect your points, and every subject explained from the ground up — plus hundreds of practice questions. A strong AFQT is well within reach for anyone who studies a little every day and learns from every mistake. Keep going, trust your preparation, and walk into that testing room ready.
