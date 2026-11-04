@@ -114,7 +114,3 @@ async function startReview(subtest?: string) {
 export async function startSubjectReview(subtest: string) {
   return startReview(subtest);
 }
-
-export function quickStartLabel() {
-  return `${plural(QUICK_CHECK.reduce((n, r) => n + r.count, 0), "question")}`;
-}
