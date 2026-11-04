@@ -399,7 +399,7 @@ function advance() {
     }
     done = true;
   });
-  if (done) return finish([]);
+  if (done) return finish();
   run();
 }
 
@@ -410,18 +410,18 @@ function timeUp() {
   const last = t.section >= t.sections.length - 1;
   update((s) => {
     const a = s.active!;
-    (a as ActiveTest & { timedOut?: string[] }).timedOut = [...((a as ActiveTest & { timedOut?: string[] }).timedOut ?? []), a.sections[a.section].subtest];
+    a.timedOut = [...(a.timedOut ?? []), a.sections[a.section].subtest];
     if (!last) {
       a.section++;
       a.index = 0;
     }
   });
   alert(`Time is up for ${name}. Unanswered questions in that part count as wrong.`);
-  if (last) return finish([]);
+  if (last) return finish();
   run();
 }
 
-function finish(extraTimedOut: string[]) {
+function finish() {
   const t = load().active!;
   const items = t.sections.flatMap((sec) =>
     sec.qids.map((qid) => {
@@ -447,7 +447,7 @@ function finish(extraTimedOut: string[]) {
     items,
     raw,
     scores: scored ? score(raw) : null,
-    timedOut: [...((t as ActiveTest & { timedOut?: string[] }).timedOut ?? []), ...extraTimedOut],
+    timedOut: t.timedOut ?? [],
   };
   update((s) => {
     const now = Date.now();
@@ -498,7 +498,7 @@ function results(id: string) {
           </section>`
         : ""
     }
-    ${a.timedOut.length ? `<p class="warn card">Time ran out in ${a.timedOut.map((k) => SUBTEST_NAMES[k as Subtest] ?? k).join(", ")}. Blank answers counted as wrong.</p>` : ""}
+    ${a.timedOut?.length ? `<p class="warn card">Time ran out in ${a.timedOut.map((k) => SUBTEST_NAMES[k as Subtest] ?? k).join(", ")}. Blank answers counted as wrong.</p>` : ""}
     <section class="card"><h2>By subject</h2>
       <div class="bars">${order
         .map((k) => {
@@ -551,7 +551,7 @@ function review(id: string) {
     </div>
     ${items.length ? "" : `<p class="card">Nothing missed. Well done.</p>`}
     ${items
-      .map((it, n) => {
+      .map((it) => {
         const q = question(it.qid);
         if (!q) return "";
         const p = passage(q.passage);
@@ -563,7 +563,7 @@ function review(id: string) {
             .map((c, i) => `<li class="${i === q.answer ? "right" : i === it.choice ? "wrong" : ""}"><span class="letter">${"ABCD"[i]}</span><span class="ctext">${c}</span>${i === q.answer ? '<span class="tag">Answer</span>' : i === it.choice ? '<span class="tag">You</span>' : ""}</li>`)
             .join("")}</ol>
           <div class="explain">${q.explain}</div>
-        </article>${n === 0 ? "" : ""}`;
+        </article>`;
       })
       .join("")}`,
   );

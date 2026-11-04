@@ -6,3 +6,4 @@ dist/
 .DS_Store
 freeasvab-app/android/app/build/
 freeasvab-app/ios/App/Pods/
+public/content/

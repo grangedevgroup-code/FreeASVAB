@@ -61,7 +61,7 @@ export function normInv(p: number): number {
 
 export function standardScore(correct: number, total: number): number {
   if (total <= 0) return 50;
-  const smoothed = (correct + 0.5) / (total + 1);
+  const smoothed = (correct + 0.25) / (total + 0.5);
   const known = Math.min(0.995, Math.max(0.005, (smoothed - CHANCE) / (1 - CHANCE)));
   return Math.round(Math.min(80, Math.max(20, 50 + 10 * normInv(known))));
 }
@@ -76,7 +76,7 @@ function compositeZ(scores: number[], weights: number[]): number {
 }
 
 export function percentile(z: number): number {
-  return Math.min(99, Math.max(1, Math.floor(normCdf(z) * 100)));
+  return Math.min(99, Math.max(1, Math.round(normCdf(z) * 100)));
 }
 
 export type Scores = {

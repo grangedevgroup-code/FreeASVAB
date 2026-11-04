@@ -19,6 +19,7 @@ export type ActiveTest = {
   sectionUsedMs: number[];
   resumedAt: number;
   startedAt: number;
+  timedOut?: string[];
 };
 
 export type AttemptItem = { qid: string; subtest: string; choice: number | null; correct: boolean; ms: number };

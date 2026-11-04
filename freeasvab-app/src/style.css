@@ -465,9 +465,6 @@ table.plain td,
   stroke-linecap: round;
   stroke-linejoin: round;
 }
-.tabs:has(+ *) {
-  display: flex;
-}
 .page:has(.runner) + .tabs {
   display: none;
 }

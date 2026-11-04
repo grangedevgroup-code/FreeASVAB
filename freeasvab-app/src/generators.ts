@@ -188,7 +188,7 @@ const AR: ((r: R) => Made)[] = [
     const spent2 = left1 / 2;
     const left = left1 - spent2;
     return {
-      text: `${pick(r, NAMES)} has ${money(total)}. ${pick(r, ["They spend", "They spend"])} ${f1[0]}/${f1[1]} of it on gas, then half of what is left on food. How much money is left?`,
+      text: `${pick(r, NAMES)} has ${money(total)}. They spend ${f1[0]}/${f1[1]} of it on gas, then half of what is left on food. How much money is left?`,
       answer: left,
       wrong: [total - spent1 - total / 2, spent1, left1],
       explain: `${f1[0]}/${f1[1]} of ${money(total)} is ${money(spent1)}, leaving ${money(left1)}. Half of that is ${money(spent2)}, leaving **${money(left)}**.`,
@@ -337,6 +337,7 @@ const MK: ((r: R) => Made)[] = [
     const b = int(r, 1, 9);
     const s = pick(r, [1, -1]);
     const bb = s * b;
+    if (bb === -a) return MK[8](r);
     const mid = a + bb;
     const end = a * bb;
     const t = (n: number) => (n < 0 ? `− ${-n}` : `+ ${n}`);
@@ -345,8 +346,7 @@ const MK: ((r: R) => Made)[] = [
       answer: 0,
       wrong: [],
       explain: `Use FOIL: *x*^2 + ${bb}*x* + ${a}*x* ${t(end)} = ***x*^2 ${t(mid)}*x* ${t(end)}**.`,
-      fmt: () => `*x*^2 ${t(mid)}*x* ${t(end)}`,
-    } as Made & { custom?: string[] };
+    };
   },
   (r) => {
     const n = int(r, 4, 25);
