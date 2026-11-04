@@ -88,7 +88,12 @@ const AR: Rule[] = [
     "Percent change always divides by the ORIGINAL amount.",
   ),
   r(
-    /together|working alone|alone in|fills? (a|the) tank|pipe [ab]|crew|can paint|can finish/i,
+    /every \d+ (minutes|hours|days).*every \d+|both .*(again|same time)|sound together/i,
+    "When things line up again",
+    ["Find the least common multiple (LCM) of the two time intervals.", "List multiples of the larger number until one is also a multiple of the smaller.", "Add that many minutes or hours to the starting time."],
+  ),
+  r(
+    /work(ing)? together|together.*(hours?|job|finish|fill|paint)|working alone|alone in|fills? (a|the) tank|pipe [ab]|crew|can paint|can finish/i,
     "Work together",
     [
       "Each worker does 1 ÷ (their time) of the job per hour.",
@@ -96,11 +101,6 @@ const AR: Rule[] = [
       "Shortcut for two workers: (A × B) ÷ (A + B).",
     ],
     "Working together must take LESS time than the faster worker alone.",
-  ),
-  r(
-    /every \d+ (minutes|hours|days).*every \d+|both .*(again|same time)|sound together/i,
-    "When things line up again",
-    ["Find the least common multiple (LCM) of the two time intervals.", "List multiples of the larger number until one is also a multiple of the smaller.", "Add that many minutes or hours to the starting time."],
   ),
   r(
     /\b[0-2]\d[0-5]\d\b[\s\S]*\b[0-2]\d[0-5]\d\b|military time|24-hour|time will it be|how long (was|is|did)/i,
