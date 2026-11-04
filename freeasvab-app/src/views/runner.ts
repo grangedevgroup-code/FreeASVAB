@@ -93,16 +93,29 @@ function sectionIntro(t: ActiveTest, key: string) {
   const next = t.sections[t.section + 1];
   page(
     null,
-    `<div class="intro">
+    `<div class="console">
+      <header class="console-bar">
+        <button class="icon-btn" id="exit" type="button" aria-label="Save and exit">${icon("close")}</button>
+        <div class="console-title"><strong>${esc(t.title)}</strong><span>PART ${t.section + 1} OF ${t.sections.length}</span></div>
+      </header>
       ${steps(t)}
-      <p class="eyebrow">${esc(t.title)} · Part ${t.section + 1} of ${t.sections.length}</p>
-      <h1>${SUBTEST_NAMES[sec.subtest]}</h1>
-      <p class="lead">${plural(sec.qids.length, "question")}${t.timed && sec.minutes ? ` · ${sec.minutes} minutes` : " · untimed"}</p>
-      <div class="alert info">${icon("info")}<p>${TIPS[sec.subtest] ?? ""}</p></div>
-      ${t.strict ? `<p class="hint">Like the real computer test, you cannot go back to change an answer once you move on.</p>` : ""}
-      <button class="btn primary wide" id="go" type="button">Start part ${t.section + 1}</button>
-      <button class="btn ghost wide" id="exit" type="button">Save and exit</button>
-      ${next ? `<p class="hint center">Next up: ${SUBTEST_NAMES[next.subtest]}</p>` : ""}
+      <div class="screen-wrap"><div class="screen">
+        <p class="eyebrow">Part ${t.section + 1} of ${t.sections.length}</p>
+        <div class="subject-head">${badge(sec.subtest, true)}<h1>${SUBTEST_NAMES[sec.subtest]}</h1></div>
+        <dl class="intro-facts">
+          <div><dt>Items</dt><dd>${sec.qids.length}</dd></div>
+          <div><dt>Time limit</dt><dd>${t.timed && sec.minutes ? `${sec.minutes} min` : "None"}</dd></div>
+        </dl>
+        <div class="notice">${icon("info")}<p>${TIPS[sec.subtest] ?? ""}</p></div>
+        ${t.strict ? `<p class="hint">Like the real computer test, you cannot go back to change an answer once you move on.</p>` : ""}
+        ${next ? `<p class="hint">Next part: ${SUBTEST_NAMES[next.subtest]}</p>` : ""}
+      </div></div>
+      <footer class="console-foot">
+        <div class="console-actions">
+          <button class="btn" id="exit2" type="button">Save and exit</button>
+          <button class="btn signal" id="go" type="button">Start part ${t.section + 1}</button>
+        </div>
+      </footer>
     </div>`,
     `Part ${t.section + 1}: ${SUBTEST_NAMES[sec.subtest]}`,
     { chrome: false },
