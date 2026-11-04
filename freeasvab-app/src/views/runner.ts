@@ -156,7 +156,7 @@ export function resumeClock() {
 }
 
 export function runnerVisible() {
-  return !!document.querySelector(".runner");
+  return !!document.querySelector(".console .screen .choices");
 }
 
 export function howTo(subtest: string, text: string, open: boolean) {
