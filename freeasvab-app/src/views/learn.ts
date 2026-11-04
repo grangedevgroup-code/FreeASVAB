@@ -69,13 +69,18 @@ export async function lesson(id: string) {
     </article>`,
     l.title,
   );
-  app.querySelectorAll<HTMLButtonElement>("[data-to]").forEach((b) =>
-    b.addEventListener("click", () => {
-      const target = document.getElementById(b.dataset.to!);
-      if (!target) return;
-      target.setAttribute("tabindex", "-1");
-      target.scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "start" });
-      target.focus({ preventScroll: true });
-    }),
-  );
+  const toc = app.querySelector<HTMLDetailsElement>(".toc");
+  toc?.addEventListener("toggle", () => {
+    const list = toc.querySelector("ol")!;
+    if (!toc.open || list.childElementCount) return;
+    list.innerHTML = l.toc.map((t) => `<li><button type="button" class="linkish" data-to="${esc(t.id)}">${esc(t.text)}</button></li>`).join("");
+  });
+  toc?.addEventListener("click", (e) => {
+    const b = (e.target as HTMLElement).closest<HTMLButtonElement>("[data-to]");
+    const target = b && document.getElementById(b.dataset.to!);
+    if (!target) return;
+    target.setAttribute("tabindex", "-1");
+    target.scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "start" });
+    target.focus({ preventScroll: true });
+  });
 }
