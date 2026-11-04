@@ -1,11 +1,10 @@
 import { esc, missedCount } from "../bank";
-import { scoreScale } from "../chart";
+import { answerSheet, scoreScale } from "../chart";
 import { isNative } from "../native";
 import { afqtRange, SUBTEST_NAMES } from "../scoring";
 import { nextSteps, scoredAttempts, trend, type Step } from "../stats";
 import { load, storageWorks, update } from "../store";
-import { app, ask, badge, chip, fmtDate, icon, page, plural } from "../ui";
-import { categoryText } from "./results";
+import { app, ask, fmtDate, icon, page, plural, section, tile } from "../ui";
 import { answeredCount, totalCount } from "./runner";
 import { testMeta, TESTS, type TestKind } from "./tests";
 
@@ -19,35 +18,61 @@ export const GOAL_PRESETS = [
 export function siteFooter() {
   return `<footer class="site-foot">
     <p><strong>FreeASVAB</strong> is free and open source. No accounts, no ads, and your results stay on this device.</p>
-    <p><a href="#/about">How scores are estimated</a> &nbsp;|&nbsp; <a href="https://github.com/grangedevgroup-code/FreeASVAB" target="_blank" rel="noopener">Source code</a></p>
+    <p class="foot-links"><a href="#/about">How scores are estimated</a><a href="https://github.com/grangedevgroup-code/FreeASVAB" target="_blank" rel="noopener">Source code</a></p>
     <p class="fine">Not affiliated with or endorsed by the U.S. Department of Defense or any military branch. ASVAB is a registered trademark of the U.S. Department of Defense.</p>
   </footer>`;
 }
 
-const TEST_CODES: Record<TestKind, string> = { quick: "QC", afqt: "AFQT", full: "FULL" };
 const TEST_BLURB: Record<TestKind, string> = {
   quick: "A short first estimate of your AFQT",
   afqt: "The four subjects that decide enlistment",
-  full: "All ten subtests, in test-day order",
+  full: "All ten subtests in test-day order",
 };
 
-function stepLink(s: Step) {
-  if (s.kind === "practice") return { href: `#/practice/${s.subtest}`, title: `Practice ${SUBTEST_NAMES[s.subtest as keyof typeof SUBTEST_NAMES]}`, cta: "Practice", code: s.subtest! };
-  if (s.kind === "review") return { href: "#/start/review", title: "Review your mistakes", cta: "Review", code: "" };
-  if (s.kind === "afqt") return { href: "#/start/afqt", title: "Take an AFQT practice test", cta: "Start", code: "" };
-  return { href: "#/start/quick", title: "Take the quick check", cta: "Start", code: "" };
+export function testItems() {
+  return `<div class="list">${(["quick", "afqt", "full"] as TestKind[])
+    .map((k) => {
+      const m = testMeta(k);
+      return `<a class="item" href="#/start/${k}"><span class="item-main"><strong>${TESTS[k].title}</strong><small>${TEST_BLURB[k]}</small></span><span class="item-meta"><b>${m.questions} questions</b>${k === "quick" ? "about 15 min" : `up to ${Math.round(m.minutes)} min`}</span>${icon("next", "chev")}</a>`;
+    })
+    .join("")}</div>`;
+}
+
+function stepItem(s: Step) {
+  const name = s.subtest ? SUBTEST_NAMES[s.subtest as keyof typeof SUBTEST_NAMES] : "";
+  const l =
+    s.kind === "practice"
+      ? { href: `#/practice/${s.subtest}`, title: `Practice ${name}`, lead: tile(s.subtest!) }
+      : s.kind === "review"
+        ? { href: "#/start/review", title: "Review your mistakes", lead: `<span class="tile" aria-hidden="true">${icon("redo")}</span>` }
+        : s.kind === "afqt"
+          ? { href: "#/start/afqt", title: "Take an AFQT practice test", lead: `<span class="tile" aria-hidden="true">${icon("target")}</span>` }
+          : { href: "#/start/quick", title: "Take the quick check", lead: `<span class="tile" aria-hidden="true">${icon("clock")}</span>` };
+  return `<a class="item" href="${l.href}">${l.lead}<span class="item-main"><strong>${l.title}</strong><small>${esc(s.reason)}</small></span>${icon("next", "chev")}</a>`;
 }
 
 function installHint() {
   const standalone = matchMedia("(display-mode: standalone)").matches || (navigator as Navigator & { standalone?: boolean }).standalone;
   if (standalone || isNative) return "";
   const ios = /iphone|ipad|ipod/i.test(navigator.userAgent) || (/Macintosh/.test(navigator.userAgent) && navigator.maxTouchPoints > 1);
-  return `<details class="panel install"><summary class="panel-head">Install as an app</summary>
-    <div class="panel-body"><p>${
+  return `<details class="list disclosure install"><summary class="item"><span class="item-main"><strong>Install as an app</strong><small>Works offline and opens from your home screen</small></span></summary>
+    <div class="disclosure-body"><p>${
       ios
         ? "In Safari, tap the Share button, then <strong>Add to Home Screen</strong>. This also keeps your progress safe: Safari can erase saved data for websites you have not opened in 7 days, but not for apps on your Home Screen."
         : "Open your browser menu and choose <strong>Install app</strong> or <strong>Add to Home screen</strong>. It then opens like any other app and works offline."
     }</p></div></details>`;
+}
+
+function goalLine(afqt: number, target: number) {
+  const gap = target - afqt;
+  if (gap <= 0) return `That meets your goal of ${target}.`;
+  return `${plural(gap, "point")} short of your goal of ${target}.`;
+}
+
+function deltaLine(delta: number | null) {
+  if (delta === null) return "";
+  if (delta === 0) return "The same as your previous test.";
+  return `${delta > 0 ? "Up" : "Down"} ${plural(Math.abs(delta), "point")} since your previous test.`;
 }
 
 export function home() {
@@ -59,112 +84,86 @@ export function home() {
   const active = s.active;
   const fresh = !s.attempts.length;
 
-  const resume = active
-    ? `<section class="panel stripe" aria-labelledby="resume-h">
-        <header class="panel-head"><h2 id="resume-h">Test in progress</h2><span class="meta">Item ${answeredCount(active) + 1} of ${totalCount(active)}</span></header>
-        <div class="panel-body">
-          <p><strong>${esc(active.title)}</strong></p>
-          <span class="meter" aria-hidden="true"><span style="width:${(answeredCount(active) / totalCount(active)) * 100}%"></span></span>
-          <div class="actions"><a class="btn primary" href="#/run">Resume</a><button class="btn" type="button" data-act="discard">Discard</button></div>
-        </div>
-      </section>`
-    : "";
-
-  const goal = !s.settings.goalSet
-    ? `<section class="panel" aria-labelledby="goal-h">
-        <header class="panel-head"><h2 id="goal-h">Set your target score</h2><span class="meta">AFQT 1 to 99</span></header>
-        <div class="panel-body">
-          <p class="hint">Pick the AFQT score you are working toward. It sets the goal line on your charts, and you can change it in Settings.</p>
-          <div class="presets">${GOAL_PRESETS.map((g) => `<button type="button" class="preset" data-goal="${g.v}"><strong>${g.v}</strong><span>${g.label}</span></button>`).join("")}</div>
-          <button type="button" class="btn ghost" data-goal="skip">Not sure yet</button>
-        </div>
-      </section>`
-    : "";
-
-  let standing = "";
+  let masthead: string;
   if (last) {
     const sc = last.scores!;
     const range = afqtRange(last.raw);
-    const delta = trend(s.attempts);
-    const toGo = target - sc.afqt!;
-    standing = `<section class="panel" aria-labelledby="status-h">
-      <header class="panel-head"><h2 id="status-h">Current standing</h2><span class="meta">${fmtDate(last.finishedAt)}</span></header>
-      <div class="panel-body">
-        <div class="score-top">
-          <div class="score-block"><span class="score-num">${sc.afqt}</span><span class="score-label">AFQT estimate</span></div>
-          <dl class="kv">
-            <div><dt>Category</dt><dd>${sc.category}</dd></div>
-            <div><dt>Likely range</dt><dd>${range ? `${range.low}–${range.high}` : "–"}</dd></div>
-            <div><dt>Since last test</dt><dd class="${delta && delta > 0 ? "up" : delta && delta < 0 ? "down" : ""}">${delta === null ? "–" : `${delta > 0 ? "+" : ""}${delta}`}</dd></div>
-            <div><dt>Goal ${target}</dt><dd>${toGo <= 0 ? "Reached" : `${toGo} <small>to go</small>`}</dd></div>
-          </dl>
+    masthead = `<h1 class="mast-label">Your estimated AFQT score</h1>
+      <div class="mast-score">
+        <span class="score-num">${sc.afqt}</span>
+        <div class="score-side">
+          <p class="score-cat">Category ${sc.category}</p>
+          ${range ? `<p>Likely between ${range.low} and ${range.high} on the real test</p>` : ""}
         </div>
-        <p>${categoryText(sc.afqt!)}</p>
-        ${scoreScale({ score: sc.afqt!, low: range?.low, high: range?.high, goal: target, min: 31, category: sc.category! })}
       </div>
-      <a class="row" href="#/results/${esc(last.id)}"><span class="row-main"><strong>Open the full score report</strong><small>${esc(last.title)}</small></span>${icon("next", "chev")}</a>
-    </section>`;
-  } else if (!fresh) {
-    standing = `<section class="panel stripe" aria-labelledby="first-h">
-      <header class="panel-head"><h2 id="first-h">No AFQT estimate yet</h2></header>
-      <div class="panel-body"><p>You have been practicing. A quick check turns that work into a score you can track.</p><a class="btn primary" href="#/start/quick">Take the quick check</a></div>
-    </section>`;
+      ${scoreScale({ score: sc.afqt!, low: range?.low, high: range?.high, goal: target, min: 31, category: sc.category! })}
+      <p class="mast-facts">${goalLine(sc.afqt!, target)} ${deltaLine(trend(s.attempts))}</p>
+      <div class="mast-actions"><a class="btn on-dark" href="#/results/${esc(last.id)}">Open the score report</a><span>${esc(last.title)}, ${fmtDate(last.finishedAt)}</span></div>`;
+  } else if (fresh) {
+    masthead = `<div class="hero">
+        <div class="hero-text">
+          <h1>Practice for the ASVAB and know your score before test day</h1>
+          <p class="mast-lead">Practice tests scored the way the real test is scored, with a worked explanation for every question. Free, with no account.</p>
+          <div class="mast-actions"><a class="btn accent big" href="#/start/quick">Take the quick check</a><span>18 questions, about 15 minutes</span></div>
+        </div>
+        ${answerSheet()}
+      </div>`;
+  } else {
+    masthead = `<h1>No score yet</h1>
+      <p class="mast-lead">You have been practicing. The quick check turns that work into an estimated AFQT score you can track.</p>
+      <div class="mast-actions"><a class="btn accent" href="#/start/quick">Take the quick check</a><span>About 15 minutes</span></div>`;
   }
 
-  const welcome = fresh
-    ? `<section class="panel welcome" aria-labelledby="welcome-h">
-        <header class="panel-head"><span>Start here</span><span class="meta">No account needed</span></header>
-        <div class="panel-body">
-          <h1 id="welcome-h">Find your starting point</h1>
-          <p class="lead">Take the 18-question quick check for an estimated AFQT score. Then practice the subjects that will raise it the most.</p>
-          <a class="btn signal big" href="#/start/quick">Start the quick check</a>
-          <p class="hint">About 15 minutes. Your results stay on this device.</p>
-        </div>
-      </section>`
-    : `<div class="page-head"><h1>Welcome back</h1></div>`;
-
-  const tests = `<section class="panel" aria-labelledby="tests-h">
-    <header class="panel-head"><h2 id="tests-h">Practice tests</h2><span class="meta">CAT-ASVAB format</span></header>
-    <div class="rows">${(["quick", "afqt", "full"] as TestKind[])
-      .map((k) => {
-        const m = testMeta(k);
-        return `<a class="row" href="#/start/${k}">${chip(TEST_CODES[k])}<span class="row-main"><strong>${TESTS[k].title}</strong><small>${TEST_BLURB[k]}</small></span><span class="row-data"><b>${m.questions} items</b>${k === "quick" ? "about 15 min" : `up to ${Math.round(m.minutes)} min`}</span>${icon("next", "chev")}</a>`;
-      })
-      .join("")}</div>
-  </section>`;
-
-  const steps = fresh ? [] : nextSteps(s.attempts, missed);
-  const next = steps.length
-    ? `<section class="panel" aria-labelledby="next-h"><header class="panel-head"><h2 id="next-h">Your next step</h2></header><ul class="next-list">${steps
-        .map((st) => {
-          const l = stepLink(st);
-          return `<li><div><strong>${l.code ? badge(l.code) : ""}${l.title}</strong><p>${esc(st.reason)}</p></div><a class="btn primary" href="${l.href}">${l.cta}</a></li>`;
-        })
-        .join("")}</ul></section>`
+  const resume = active
+    ? section(
+        "resume-h",
+        "Test in progress",
+        `<div class="list"><div class="item resume">
+          <span class="item-main"><strong>${esc(active.title)}</strong><small>Question ${answeredCount(active) + 1} of ${totalCount(active)}</small>
+            <span class="meter" aria-hidden="true"><span style="width:${(answeredCount(active) / totalCount(active)) * 100}%"></span></span></span>
+          <span class="item-actions"><button class="btn quiet" type="button" data-act="discard">Discard</button><a class="btn primary" href="#/run">Resume</a></span>
+        </div></div>`,
+      )
     : "";
 
-  const study = `<section class="panel" aria-labelledby="study-h">
-    <header class="panel-head"><h2 id="study-h">Study</h2></header>
-    <div class="rows">
-      <a class="row" href="#/practice">${icon("practice")}<span class="row-main"><strong>Practice by subject</strong><small>The answer is explained after every question</small></span>${icon("next", "chev")}</a>
-      ${missed ? `<a class="row" href="#/start/review">${icon("redo")}<span class="row-main"><strong>Review mistakes</strong><small>${plural(missed, "question")} to fix</small></span>${icon("next", "chev")}</a>` : ""}
-      <a class="row" href="#/learn">${icon("book")}<span class="row-main"><strong>Lessons</strong><small>Every subject in plain English</small></span>${icon("next", "chev")}</a>
-    </div>
-  </section>`;
+  const goal = !s.settings.goalSet
+    ? section(
+        "goal-h",
+        "Set your target score",
+        `<div class="list" role="group" aria-labelledby="goal-h">${GOAL_PRESETS.map(
+          (g) => `<button type="button" class="item choice-item" data-goal="${g.v}"><span class="bubble" aria-hidden="true"></span><span class="item-main"><strong>${g.v}</strong><small>${g.label}</small></span></button>`,
+        ).join("")}</div>
+        <button type="button" class="btn quiet" data-goal="skip">Not sure yet</button>`,
+        "The AFQT score you are working toward. It sets the goal line on your charts.",
+      )
+    : "";
+
+  const steps = fresh ? [] : nextSteps(s.attempts, missed);
+  const next = steps.length ? section("next-h", "Work on next", `<div class="list">${steps.map(stepItem).join("")}</div>`) : "";
+
+  const study = section(
+    "study-h",
+    "Study",
+    `<div class="list">
+      <a class="item" href="#/practice"><span class="tile" aria-hidden="true">${icon("practice")}</span><span class="item-main"><strong>Practice by subject</strong><small>An explanation after every answer</small></span>${icon("next", "chev")}</a>
+      ${missed ? `<a class="item" href="#/start/review"><span class="tile" aria-hidden="true">${icon("redo")}</span><span class="item-main"><strong>Review mistakes</strong><small>${plural(missed, "question")} to fix</small></span>${icon("next", "chev")}</a>` : ""}
+      <a class="item" href="#/learn"><span class="tile" aria-hidden="true">${icon("learn")}</span><span class="item-main"><strong>Lessons</strong><small>Every subject in plain English</small></span>${icon("next", "chev")}</a>
+    </div>`,
+  );
 
   page(
     "home",
-    `${welcome}
-    ${resume}
+    `${resume}
     ${goal}
     <div class="dash">
-      <div class="dash-col">${standing}${tests}</div>
+      <div class="dash-col">${section("tests-h", "Practice tests", testItems())}</div>
       <div class="dash-col">${next}${study}</div>
     </div>
     ${installHint()}
     ${storageWorks() ? "" : `<div class="notice warn">${icon("warn")}<p>This browser is blocking storage, so your results will be lost when you close the page. Private browsing often causes this.</p></div>`}
     ${siteFooter()}`,
     fresh ? "Free ASVAB practice" : "Home",
+    { masthead },
   );
 
   app.querySelector('[data-act="discard"]')?.addEventListener("click", async () => {
