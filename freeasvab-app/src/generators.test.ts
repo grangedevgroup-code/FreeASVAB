@@ -2,8 +2,8 @@ import { describe, expect, it } from "vitest";
 import { GENERATED, generate, generatedId } from "./generators";
 
 function value(s: string) {
-  const t = s.replace(/[$,%°π]|sq (ft|in)|miles|hours/g, "").replace(/−/g, "-").trim();
-  return Number(t);
+  const m = s.replace(/,/g, "").replace(/−/g, "-").match(/-?\d+(\.\d+)?/);
+  return m ? Number(m[0]) : NaN;
 }
 
 describe("generated questions", () => {
