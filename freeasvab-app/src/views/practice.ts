@@ -24,14 +24,14 @@ function subjectRow(k: string) {
   const st = subjectStats(k, load().qstats);
   const acc = accuracy(load().attempts, k);
   const seenPct = st.total ? Math.round((st.seen / st.total) * 100) : 0;
-  return `<a class="row" href="#/practice/${k}">
-    ${badge(k)}
-    <span class="row-main">
+  return `<a class="item" href="#/practice/${k}">
+    ${tile(k)}
+    <span class="item-main">
       <strong>${SUBTEST_NAMES[k as Subtest | "MF"]}</strong>
       <small>${st.total}${k === "AR" || k === "MK" ? "+" : ""} questions, ${seenPct}% seen</small>
       <span class="meter" aria-hidden="true"><span style="width:${seenPct}%"></span></span>
     </span>
-    <span class="row-data"><b>${acc ? `${acc.pct}%` : "–"}</b>recent</span>
+    ${acc ? `<span class="item-meta"><b>${acc.pct}%</b>correct</span>` : ""}
     ${icon("next", "chev")}
   </a>`;
 }
@@ -41,23 +41,28 @@ export async function practice() {
   const missed = missedCount(load().qstats);
   page(
     "practice",
-    `<div class="page-head"><h1>Practice</h1><p class="lead">Pick a subtest. You see the right answer and a full explanation after every question.</p></div>
-    ${missed ? `<a class="notice warn" href="#/start/review">${icon("redo")}<span><strong>Review ${plural(missed, "missed question")}</strong><br>Fixing mistakes is the fastest way to gain points.</span>${icon("next", "chev")}</a>` : ""}
-    <section class="panel" aria-labelledby="afqt-h">
-      <header class="panel-head"><h2 id="afqt-h">AFQT subtests</h2><span class="meta">Decide whether you can enlist</span></header>
-      <div class="rows">${[...AFQT_PRACTICE, "MF"].map(subjectRow).join("")}</div>
-    </section>
-    <section class="panel" aria-labelledby="career-h">
-      <header class="panel-head"><h2 id="career-h">Career subtests</h2><span class="meta">Decide which jobs you qualify for</span></header>
-      <div class="rows">${CAREER_PRACTICE.map(subjectRow).join("")}</div>
-    </section>`,
+    `<div class="page-head"><h1>Practice</h1><p class="lead">Pick a subtest. You see the right answer and a worked explanation after every question.</p></div>
+    ${
+      missed
+        ? `<div class="list"><a class="item" href="#/start/review"><span class="tile" aria-hidden="true">${icon("redo")}</span><span class="item-main"><strong>Review ${plural(missed, "missed question")}</strong><small>Fixing mistakes is the fastest way to gain points</small></span>${icon("next", "chev")}</a></div>`
+        : ""
+    }
+    ${section("afqt-h", "AFQT subtests", `<div class="list">${[...AFQT_PRACTICE, "MF"].map(subjectRow).join("")}</div>`, "These decide whether you can enlist.")}
+    ${section("career-h", "Career subtests", `<div class="list">${CAREER_PRACTICE.map(subjectRow).join("")}</div>`, "These decide which jobs you qualify for.")}`,
     "Practice",
     { narrow: true },
   );
 }
 
 function setRow(s: QuizSet) {
-  return `<a class="row" href="#/practice/set/${esc(s.id)}"><span class="row-main"><strong>${esc(s.title)}</strong><small>${esc(s.source)}</small></span><span class="row-data"><b>${s.count}</b>items</span>${icon("next", "chev")}</a>`;
+  return `<a class="item" href="#/practice/set/${esc(s.id)}"><span class="item-main"><strong>${esc(s.title)}</strong><small>${esc(s.source)}</small></span><span class="item-meta"><b>${s.count}</b>questions</span>${icon("next", "chev")}</a>`;
+}
+
+function record(seen: number, total: number, gen: boolean, acc: { pct: number } | null, toReview: number) {
+  const parts = [`You have seen ${seen} of ${total}${gen ? "+" : ""} questions.`];
+  if (acc) parts.push(`${acc.pct}% of your recent answers were right.`);
+  if (toReview) parts.push(`${plural(toReview, "question is", "questions are")} waiting for review.`);
+  return parts.join(" ");
 }
 
 export async function practiceSubject(k: string) {
