@@ -204,54 +204,46 @@ function renderQuestion(t: ActiveTest) {
   const total = totalCount(t);
   const allowHints = t.allowHints ?? true;
   const hintOpen = !!t.hinted?.includes(qid);
-  const pad = (x: number) => String(x).padStart(2, "0");
+  const title = multi ? esc(SUBTEST_NAMES[sec.subtest]) : esc(t.title);
+  const sub = multi ? `Part ${t.section + 1} of ${t.sections.length}, question ${done + 1} of ${total} overall` : t.instant ? "Practice mode" : "Test mode";
   page(
     null,
-    `<div class="console">
-      <header class="console-bar">
-        <button class="icon-btn" id="exit" type="button" aria-label="Save and exit">${icon("close")}</button>
-        <div class="console-title">
-          <strong>${multi ? `${sec.subtest === "MF" ? "" : `${sec.subtest} `}${esc(SUBTEST_NAMES[sec.subtest])}` : esc(t.title)}</strong>
-          <span>${multi ? `PART ${t.section + 1} OF ${t.sections.length}` : t.instant ? "PRACTICE MODE" : "TEST MODE"}</span>
-        </div>
-      </header>
-      ${multi ? steps(t) : ""}
-      <div class="screen-wrap"><div class="screen" role="group" aria-label="Item ${t.index + 1} of ${n}">
+    `<div class="exam">
+      ${examBar(title, sub, true, strip(t))}
+      <div class="exam-body"><div class="exam-sheet${p ? " has-passage" : ""}">
         ${p ? `<article class="passage" aria-label="Passage">${p}</article>` : ""}
-        ${q.instr && t.index === 0 ? `<p class="instr">${q.instr}</p>` : ""}
-        <div class="qtext" id="qtext">${q.text}</div>
-        ${allowHints ? howTo(q.subtest, q.text, hintOpen) : ""}
-        <fieldset class="choices ${q.figChoices ? "figs" : ""}" aria-label="Answer choices" ${isChecked ? "disabled" : ""}>
-          ${q.choices
-            .map((c, i) => {
-              let cls = chosen === i ? "sel" : "";
-              if (isChecked) cls += i === q.answer ? " right" : chosen === i ? " wrong" : "";
-              const mark = isChecked && i === q.answer ? `<span class="tag go">Answer</span>` : isChecked && chosen === i ? `<span class="tag nogo">Yours</span>` : "";
-              return `<label class="choice ${cls}"><input type="radio" name="answer" value="${i}" ${chosen === i ? "checked" : ""}><span class="key" aria-hidden="true">${LETTERS[i]}</span><span class="ctext">${c}</span>${mark}</label>`;
-            })
-            .join("")}
-        </fieldset>
-        ${
-          isChecked
-            ? `<div class="explain ${chosen === q.answer ? "ok" : "bad"}" id="explain" tabindex="-1">
-                <p class="explain-head">${icon(chosen === q.answer ? "check" : "info")}<strong>${chosen === q.answer ? "Correct" : `Not quite: the answer is ${LETTERS[q.answer]}`}</strong></p>
-                ${q.explain}<p class="src">${esc(q.source)}</p></div>`
-            : ""
-        }
+        <div class="exam-q" role="group" aria-label="Question ${t.index + 1} of ${n}">
+          <p class="q-count">Question ${t.index + 1} of ${n}</p>
+          ${q.instr && t.index === 0 ? `<p class="instr">${q.instr}</p>` : ""}
+          <div class="qtext" id="qtext">${q.text}</div>
+          <fieldset class="choices ${q.figChoices ? "figs" : ""}" aria-label="Answer choices" ${isChecked ? "disabled" : ""}>
+            ${q.choices
+              .map((c, i) => {
+                let cls = chosen === i ? "sel" : "";
+                if (isChecked) cls += i === q.answer ? " right" : chosen === i ? " wrong" : "";
+                const mark = isChecked && i === q.answer ? `<span class="mark go">Correct answer</span>` : isChecked && chosen === i ? `<span class="mark nogo">Your answer</span>` : "";
+                return `<label class="choice ${cls}"><input type="radio" name="answer" value="${i}" ${chosen === i ? "checked" : ""}><span class="bubble" aria-hidden="true">${LETTERS[i]}</span><span class="ctext">${c}</span>${mark}</label>`;
+              })
+              .join("")}
+          </fieldset>
+          ${
+            isChecked
+              ? `<div class="explain ${chosen === q.answer ? "ok" : "bad"}" id="explain" tabindex="-1">
+                  <p class="explain-head">${icon(chosen === q.answer ? "check" : "info")}<strong>${chosen === q.answer ? "Correct" : `Not quite. The answer is ${LETTERS[q.answer]}.`}</strong></p>
+                  ${q.explain}<p class="src">${esc(q.source)}</p></div>`
+              : ""
+          }
+          ${allowHints ? howTo(q.subtest, q.text, hintOpen) : ""}
+        </div>
       </div></div>
-      <footer class="console-foot">
-        <div class="status-line">
-          <span role="progressbar" aria-label="Progress" aria-valuemin="0" aria-valuemax="${total}" aria-valuenow="${done}">ITEM <b>${pad(t.index + 1)}</b> OF <b>${pad(n)}</b></span>
-          <span class="clock" id="clock" role="timer" aria-label="Time remaining"></span>
-        </div>
-        <div class="console-actions">
+      <footer class="exam-foot"><div class="exam-foot-inner">
+        <p class="exam-foot-note">${t.strict && !t.instant ? "Answers are final once you move on." : ""}<span class="keys" aria-hidden="true">Press 1 to 4 or A to D to choose, then Enter.</span></p>
+        <div class="exam-actions">
           ${!t.strict && !t.instant && t.index > 0 ? `<button class="btn" id="prev" type="button">${icon("back")}Back</button>` : ""}
-          ${!t.strict && !t.instant && chosen === undefined ? `<button class="btn" id="skip" type="button">Skip</button>` : ""}
-          <button class="btn signal" id="next" type="button" ${chosen === undefined && (t.instant || t.strict) ? "disabled" : ""}>${nextLabel(t, isChecked, chosen !== undefined && chosen !== null)}</button>
+          ${!t.strict && !t.instant && chosen === undefined ? `<button class="btn quiet" id="skip" type="button">Skip</button>` : ""}
+          <button class="btn primary" id="next" type="button" ${chosen === undefined && (t.instant || t.strict) ? "disabled" : ""}>${nextLabel(t, isChecked, chosen !== undefined && chosen !== null)}</button>
         </div>
-        ${t.strict && !t.instant ? `<p class="console-note">Answers are final once you move on.</p>` : ""}
-        <p class="keys" aria-hidden="true">Keys: 1 to 4 or A to D to choose, Enter to confirm</p>
-      </footer>
+      </div></footer>
     </div>`,
     multi ? `${SUBTEST_NAMES[sec.subtest]}, question ${t.index + 1}` : `${t.title}, question ${t.index + 1}`,
     { chrome: false },
