@@ -263,6 +263,20 @@ function slug(s) {
   return s.toLowerCase().replace(/&[a-z]+;/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
 }
 
+function stripTags(html) {
+  let text = html;
+  let prev;
+  do {
+    prev = text;
+    text = text.replace(/<[^<>]*>/g, "");
+  } while (text !== prev);
+  return text.replace(/[<>]/g, "");
+}
+
+function headingText(html) {
+  return stripTags(html).replace(/&#39;/g, "'").replace(/&quot;/g, '"').replace(/&amp;/g, "&").trim();
+}
+
 function boxes(text) {
   return text.replace(/^(:{3,})[ \t]*([\w-]+)[ \t]*(.*?)\n([\s\S]*?)^\1[ \t]*$/gm, (_, colons, kind, title, body) => {
     const inner = md(boxes(body));
