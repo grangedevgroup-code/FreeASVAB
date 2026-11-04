@@ -203,7 +203,7 @@ function renderQuestion(t: ActiveTest) {
   const allowHints = t.allowHints ?? true;
   const hintOpen = !!t.hinted?.includes(qid);
   const title = multi ? esc(SUBTEST_NAMES[sec.subtest]) : esc(t.title);
-  const sub = multi ? `Part ${t.section + 1} of ${t.sections.length}, question ${done + 1} of ${total} overall` : t.instant ? "Practice mode" : "Test mode";
+  const sub = multi ? `Part ${t.section + 1} of ${t.sections.length}` : t.instant ? "Practice mode" : "Test mode";
   page(
     null,
     `<div class="exam">
